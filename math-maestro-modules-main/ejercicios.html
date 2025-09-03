@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ejercicios de Práctica - Expresiones Algebraicas</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+          --primary-color: #4ecdc4;
+          --secondary-color: #667eea;
+          --accent-color: #ff6b6b;
+          --success-color: #2ecc71;
+          --warning-color: #f39c12;
+          --error-color: #e74c3c;
+          --text-color: #2c3e50;
+          --bg-light: #f8f9fa;
+          --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, var(--secondary-color) 0%, #764ba2 100%);
+          min-height: 100vh;
+          color: var(--text-color);
+          line-height: 1.6;
+          padding: 20px;
+      }
+
+      .app-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          background: white;
+          min-height: 90vh;
+          box-shadow: var(--shadow-hover);
+          border-radius: 20px;
+          overflow-x: hidden;
+          position: relative;
+      }
+
+      .header {
+          background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+          color: white;
+          text-align: center;
+          padding: 2rem;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          box-shadow: var(--shadow);
+      }
+
+      .header h1 {
+          font-size: 2.5rem;
+          margin-bottom: 0.5rem;
+          font-weight: 700;
+      }
+
+      .header p {
+          font-size: 1.1rem;
+          opacity: 0.9;
+      }
+
+      .progress-container {
+          padding: 1rem 2rem;
+          background: white;
+          border-bottom: 1px solid #eee;
+          position: sticky;
+          top: 140px;
+          z-index: 99;
+          display: flex;
+          flex-direction: column;
+      }
+
+      .progress-bar {
+          width: 100%;
+          height: 8px;
+          background: #e9ecef;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 1rem;
+      }
+
+      .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+          width: 0%;
+          transition: width 0.5s ease;
+      }
+
+      .progress-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.9rem;
+          color: #666;
+      }
+
+      .section-progress {
+          display: flex;
+          gap: 5px;
+          margin-top: 10px;
+      }
+
+      .section-dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #e9ecef;
+          cursor: pointer;
+          transition: all 0.3s;
+      }
+
+      .section-dot.completed {
+          background: var(--success-color);
+      }
+
+      .section-dot.current {
+          background: var(--primary-color);
+          transform: scale(1.2);
+      }
+
+      .main-content {
+          display: flex;
+          min-height: calc(100vh - 200px);
+      }
+
+      .sidebar {
+          width: 280px;
+          background: var(--bg-light);
+          padding: 2rem 1.5rem;
+          border-right: 1px solid #dee2e6;
+          position: sticky;
+          top: 200px;
+          height: fit-content;
+          overflow-y: auto;
+          max-height: calc(100vh - 200px);
+      }
+
+      .sidebar h3 {
+          color: var(--text-color);
+          margin-bottom: 1rem;
+          font-size: 1.1rem;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+
+      .nav-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          margin-bottom: 0.5rem;
+          border-radius: 8px;
+          text-decoration: none;
+          color: #666;
+          border: 2px solid transparent;
+          position: relative;
+          background: white;
+          cursor: pointer;
+      }
+
+      .nav-item.active {
+          background: var(--primary-color);
+          color: white;
+          border-color: var(--secondary-color);
+          font-weight: bold;
+      }
+
+      .nav-item:hover:not(.active) {
+          background: #f0faff;
+          color: var(--primary-color);
+          transform: translateX(3px);
+          transition: all 0.2s ease;
+      }
+
+      .content-area {
+          flex: 1;
+          padding: 2rem;
+          position: relative;
+      }
+
+      .section {
+          display: none;
+          animation: fadeIn 0.5s ease-in;
+      }
+
+      .section.active {
+          display: block;
+      }
+
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      .section h2 {
+          color: var(--text-color);
+          margin-bottom: 2rem;
+          font-size: 2rem;
+          border-bottom: 3px solid var(--primary-color);
+          padding-bottom: 0.5rem;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+
+      .card {
+          background: white;
+          border-radius: 12px;
+          padding: 2rem;
+          margin-bottom: 2rem;
+          box-shadow: var(--shadow);
+          border: 1px solid #e9ecef;
+          transition: all 0.3s ease;
+      }
+
+      .card:hover {
+          box-shadow: var(--shadow-hover);
+          transform: translateY(-2px);
+      }
+
+      .card.highlight {
+          border-left: 5px solid var(--primary-color);
+          background: linear-gradient(135deg, #f8f9ff, #fff);
+      }
+
+      .card.warning {
+          border-left: 5px solid var(--warning-color);
+          background: linear-gradient(135deg, #fffdf7, #fff);
+      }
+
+      .card.success {
+          border-left: 5px solid var(--success-color);
+          background: linear-gradient(135deg, #f7fff7, #fff);
+      }
+
+      .exercise-container {
+          background: var(--bg-light);
+          border-radius: 12px;
+          padding: 2rem;
+          margin: 2rem 0;
+      }
+
+      .exercise {
+          background: white;
+          border-radius: 10px;
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+          border: 2px solid #e9ecef;
+          transition: all 0.3s ease;
+          position: relative;
+      }
+
+      .exercise:hover {
+          border-color: var(--primary-color);
+      }
+
+      .exercise.completed {
+          border-color: var(--success-color);
+          background: linear-gradient(135deg, #f7fff7, #fff);
+      }
+
+      .exercise-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+          flex-wrap: wrap;
+          gap: 10px;
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid #eee;
+      }
+
+      .exercise-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: var(--text-color);
+      }
+
+      .difficulty-badge {
+          padding: 0.25rem 0.75rem;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 500;
+      }
+
+      .difficulty-easy {
+          background: #d4edda;
+          color: #155724;
+      }
+
+      .difficulty-medium {
+          background: #fff3cd;
+          color: #856404;
+      }
+
+      .difficulty-hard {
+          background: #f8d7da;
+          color: #721c24;
+      }
+
+      .step-by-step {
+          background: #f8f9ff;
+          border: 1px solid #e1e5fe;
+          border-radius: 8px;
+          padding: 1.5rem;
+          margin: 1rem 0;
+      }
+
+      .step {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+          padding: 0.75rem;
+          background: white;
+          border-radius: 6px;
+          border-left: 4px solid var(--primary-color);
+      }
+
+      .step-number {
+          background: var(--primary-color);
+          color: white;
+          min-width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          margin-right: 1rem;
+          flex-shrink: 0;
+      }
+
+      .input-group {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin: 1.5rem 0;
+          flex-wrap: wrap;
+      }
+
+      .math-input {
+          width: 150px;
+          padding: 0.75rem;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          font-size: 1.1rem;
+          text-align: center;
+          transition: all 0.3s ease;
+      }
+
+      .math-input:focus {
+          outline: none;
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+      }
+
+      .btn {
+          background: var(--primary-color);
+          color: white;
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .btn:hover {
+          background: #45b7aa;
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-hover);
+      }
+
+      .btn:active {
+          transform: translateY(0);
+      }
+
+      .btn-secondary {
+          background: #6c757d;
+      }
+
+      .btn-secondary:hover {
+          background: #5a6268;
+      }
+
+      .btn-hint {
+          background: var(--warning-color);
+      }
+
+      .btn-hint:hover {
+          background: #e67e22;
+      }
+
+      .feedback {
+          margin-top: 1rem;
+          padding: 1rem;
+          border-radius: 8px;
+          font-weight: 500;
+          display: none;
+      }
+
+      .feedback.show {
+          display: block;
+          animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      .feedback.correct {
+          background: linear-gradient(135deg, #d4edda, #c3e6cb);
+          color: #155724;
+          border: 1px solid #c3e6cb;
+      }
+
+      .feedback.incorrect {
+          background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+          color: #721c24;
+          border: 1px solid #f5c6cb);
+      }
+
+      .feedback.hint {
+          background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+          color: #856404;
+          border: 1px solid #ffeaa7;
+      }
+
+      .stats-panel {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin: 2rem 0;
+      }
+
+      .stat-card {
+          background: white;
+          padding: 1.5rem;
+          border-radius: 12px;
+          text-align: center;
+          border: 1px solid #e9ecef;
+          box-shadow: var(--shadow);
+      }
+
+      .stat-number {
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: var(--primary-color);
+          display: block;
+      }
+
+      .stat-label {
+          font-size: 0.9rem;
+          color: #666;
+          margin-top: 0.5rem;
+      }
+
+      .reference-card {
+          background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+          border: 1px solid #bbdefb;
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin: 1rem 0;
+      }
+
+      .reference-title {
+          font-weight: bold;
+          color: var(--text-color);
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      code {
+          background: #e9ecef;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-family: 'Courier New', Courier, monospace;
+          color: #e83e8c;
+          display: inline-block;
+          margin-top: 5px;
+      }
+
+      .visual-example {
+          background: white;
+          border-radius: 10px;
+          padding: 2rem;
+          margin: 1.5rem 0;
+          text-align: center;
+          border: 2px dashed var(--primary-color);
+      }
+
+      .nav-buttons {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 2rem;
+      }
+
+      .expression-input {
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          font-size: 1.1rem;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 1rem;
+      }
+
+      .algebra-visualization {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          margin: 1.5rem 0;
+          flex-wrap: wrap;
+      }
+
+      .algebra-term {
+          background: white;
+          border-radius: 8px;
+          padding: 1rem;
+          box-shadow: var(--shadow);
+          text-align: center;
+          min-width: 80px;
+      }
+
+      .term-coefficient {
+          font-weight: bold;
+          color: var(--primary-color);
+      }
+
+      .term-variable {
+          color: var(--secondary-color);
+      }
+
+      .term-operator {
+          font-size: 1.5rem;
+          align-self: center;
+      }
+
+      .multiple-choice {
+          margin: 1.5rem 0;
+      }
+
+      .option {
+          padding: 1rem;
+          margin: 0.5rem 0;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+
+      .option:hover {
+          background: #f8f9fa;
+          border-color: var(--primary-color);
+      }
+
+      .option.selected {
+          background: #e3f2fd;
+          border-color: var(--primary-color);
+      }
+
+      .option.correct {
+          background: #d4edda;
+          border-color: var(--success-color);
+      }
+
+      .option.incorrect {
+          background: #f8d7da;
+          border-color: var(--error-color);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .app-container { border-radius: 10px; min-height: calc(100vh - 20px); }
+          .header h1 { font-size: 1.5rem; }
+          .header p { font-size: 0.9rem; }
+          .header { padding: 1.5rem 1rem; }
+          .main-content { flex-direction: column; }
+          .sidebar {
+              width: 100%;
+              position: static;
+              order: 2;
+              padding: 1rem;
+              max-height: none;
+              height: auto;
+              border-right: none;
+              border-top: 1px solid #dee2e6;
+          }
+          .content-area { padding: 1rem; order: 1; }
+          .progress-container { padding: 0.75rem 1rem; position: static; }
+          .input-group { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+          .math-input { width: 100%; max-width: 200px; margin: 0 auto; }
+          .btn { width: 100%; max-width: 220px; margin: 0 auto; padding: 0.75rem; justify-content: center; }
+          .card { padding: 1.25rem; margin-bottom: 1.5rem; }
+          .section h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+          .stats-panel { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+          .nav-buttons { flex-direction: column; gap: 1rem; }
+          .nav-buttons .btn { width: 100%; }
+          .exercise-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      }
+
+      @media (max-width: 480px) {
+          .header h1 { font-size: 1.3rem; }
+          .stats-panel { grid-template-columns: 1fr; }
+          .card { padding: 1rem; }
+          .section h2 { font-size: 1.3rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="header">
+        <h1>
+          <i class="fas fa-pencil-alt" aria-hidden="true"></i> Ejercicios de
+          Práctica: Expresiones Algebraicas
+        </h1>
+        <p>Pon a prueba tus conocimientos con ejercicios interactivos</p>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-info">
+          <span id="progressText">Sección 1 de 4</span>
+          <span id="completionRate">0% completado</span>
+        </div>
+        <div class="section-progress" id="sectionProgress"></div>
+      </div>
+
+      <div class="main-content">
+        <nav class="sidebar" aria-label="Navegación principal">
+          <h3>
+            <i class="fas fa-book" aria-hidden="true"></i> Categorías de
+            Ejercicios
+          </h3>
+          <div class="nav-item active" onclick="showSection(1)">
+            <span>1. Identificación</span><span class="status-badge">🔍</span>
+          </div>
+          <div class="nav-item" onclick="showSection(2)">
+            <span>2. Simplificación</span><span class="status-badge">🧮</span>
+          </div>
+          <div class="nav-item" onclick="showSection(3)">
+            <span>3. Evaluación</span><span class="status-badge">📊</span>
+          </div>
+          <div class="nav-item" onclick="showSection(4)">
+            <span>4. Propiedades</span><span class="status-badge">⚖️</span>
+          </div>
+          <div class="stats-panel" style="margin-top: 2rem">
+            <div class="stat-card">
+              <span class="stat-number" id="totalScore">0</span>
+              <span class="stat-label">Puntos</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" id="accuracy">0%</span>
+              <span class="stat-label">Precisión</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" id="exercisesCompleted">0</span>
+              <span class="stat-label">Completados</span>
+            </div>
+          </div>
+        </nav>
+
+        <main class="content-area" role="main">
+          <!-- Sección 1: Identificación -->
+          <section class="section active" id="section1">
+            <h2>
+              <i class="fas fa-search" aria-hidden="true"></i> Identificación de
+              Elementos
+            </h2>
+            <div class="card highlight">
+              <h3>Identifica variables, constantes y términos semejantes</h3>
+              <p>
+                Estos ejercicios te ayudarán a reconocer los diferentes
+                componentes de las expresiones algebraicas.
+              </p>
+            </div>
+
+            <div class="exercise-container">
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 1: Variables vs Constantes</span
+                  >
+                  <span class="difficulty-badge difficulty-easy">Fácil</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> En la expresión 3x + 2y - 5,
+                  identifica las variables y constantes.
+                </p>
+                <div class="multiple-choice">
+                  <div class="option" onclick="selectOption(this, '1a')">
+                    <strong>A)</strong> Variables: 3, 2; Constantes: x, y, 5
+                  </div>
+                  <div class="option" onclick="selectOption(this, '1a')">
+                    <strong>B)</strong> Variables: x, y; Constantes: 3, 2, 5
+                  </div>
+                  <div class="option" onclick="selectOption(this, '1a')">
+                    <strong>C)</strong> Variables: 3x, 2y; Constantes: -5
+                  </div>
+                  <div
+                    class="option correct-option"
+                    onclick="selectOption(this, '1a')"
+                  >
+                    <strong>D)</strong> Variables: x, y; Constantes: 3, 2, -5
+                  </div>
+                </div>
+                <div class="input-group">
+                  <button class="btn" onclick="checkMultipleChoice('1a', 'D')">
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('1a')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback1a"></div>
+                <div class="feedback hint" id="hint1a" style="display: none">
+                  Recuerda: las variables son letras que representan valores
+                  desconocidos, las constantes son números fijos.
+                </div>
+              </div>
+
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 2: Términos Semejantes</span
+                  >
+                  <span class="difficulty-badge difficulty-medium">Medio</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> ¿Cuáles de estos términos son
+                  semejantes: 3x, 2y, -5x, 4xy?
+                </p>
+                <div class="multiple-choice">
+                  <div class="option" onclick="selectOption(this, '1b')">
+                    <strong>A)</strong> 3x y 2y
+                  </div>
+                  <div
+                    class="option correct-option"
+                    onclick="selectOption(this, '1b')"
+                  >
+                    <strong>B)</strong> 3x y -5x
+                  </div>
+                  <div class="option" onclick="selectOption(this, '1b')">
+                    <strong>C)</strong> 2y y 4xy
+                  </div>
+                  <div class="option" onclick="selectOption(this, '1b')">
+                    <strong>D)</strong> Todos son semejantes
+                  </div>
+                </div>
+                <div class="input-group">
+                  <button class="btn" onclick="checkMultipleChoice('1b', 'B')">
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('1b')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback1b"></div>
+                <div class="feedback hint" id="hint1b" style="display: none">
+                  Los términos semejantes tienen las mismas variables con los
+                  mismos exponentes.
+                </div>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" disabled aria-disabled="true">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(2)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 2: Simplificación -->
+          <section class="section" id="section2">
+            <h2>
+              <i class="fas fa-compress-arrows-alt" aria-hidden="true"></i>
+              Simplificación de Expresiones
+            </h2>
+            <div class="card highlight">
+              <h3>Simplifica expresiones combinando términos semejantes</h3>
+              <p>
+                Practica la simplificación de expresiones algebraicas paso a
+                paso.
+              </p>
+            </div>
+
+            <div class="exercise-container">
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 1: Simplificación básica</span
+                  >
+                  <span class="difficulty-badge difficulty-easy">Fácil</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> Simplifica la expresión: 3x + 2y -
+                  x + 4y
+                </p>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="math-input"
+                    id="answer2a"
+                    placeholder="Ej: 2x + 6y"
+                  />
+                  <button
+                    class="btn"
+                    onclick="checkAlgebraAnswer('2a', '2x+6y')"
+                  >
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('2a')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback2a"></div>
+                <div class="feedback hint" id="hint2a" style="display: none">
+                  Agrupa términos con x: 3x - x = 2x. Agrupa términos con y: 2y
+                  + 4y = 6y.
+                </div>
+              </div>
+
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 2: Simplificación avanzada</span
+                  >
+                  <span class="difficulty-badge difficulty-medium">Medio</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> Simplifica: 2x² + 3xy - x² + 2xy -
+                  5y
+                </p>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="math-input"
+                    id="answer2b"
+                    placeholder="Ej: x²+5xy-5y"
+                  />
+                  <button
+                    class="btn"
+                    onclick="checkAlgebraAnswer('2b', 'x²+5xy-5y')"
+                  >
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('2b')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback2b"></div>
+                <div class="feedback hint" id="hint2b" style="display: none">
+                  Agrupa términos x²: 2x² - x² = x². Agrupa términos xy: 3xy +
+                  2xy = 5xy. El término -5y no tiene semejantes.
+                </div>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(1)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(3)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 3: Evaluación -->
+          <section class="section" id="section3">
+            <h2>
+              <i class="fas fa-calculator" aria-hidden="true"></i> Evaluación de
+              Expresiones
+            </h2>
+            <div class="card highlight">
+              <h3>Evalúa expresiones sustituyendo valores</h3>
+              <p>
+                Practica la evaluación de expresiones algebraicas con valores
+                específicos.
+              </p>
+            </div>
+
+            <div class="exercise-container">
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 1: Evaluación simple</span
+                  >
+                  <span class="difficulty-badge difficulty-easy">Fácil</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> Evalúa la expresión 3x + 4 cuando x
+                  = 2
+                </p>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="math-input"
+                    id="answer3a"
+                    placeholder="Resultado"
+                  />
+                  <button class="btn" onclick="checkAnswer('3a', 10)">
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('3a')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback3a"></div>
+                <div class="feedback hint" id="hint3a" style="display: none">
+                  Sustituye x por 2: 3(2) + 4 = 6 + 4 = 10
+                </div>
+              </div>
+
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 2: Evaluación con múltiples variables</span
+                  >
+                  <span class="difficulty-badge difficulty-medium">Medio</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> Evalúa 2x + 3y - z cuando x=3, y=2,
+                  z=1
+                </p>
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="math-input"
+                    id="answer3b"
+                    placeholder="Resultado"
+                  />
+                  <button class="btn" onclick="checkAnswer('3b', 11)">
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('3b')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback3b"></div>
+                <div class="feedback hint" id="hint3b" style="display: none">
+                  Sustituye: 2(3) + 3(2) - 1 = 6 + 6 - 1 = 11
+                </div>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(2)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(4)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 4: Propiedades -->
+          <section class="section" id="section4">
+            <h2>
+              <i class="fas fa-cogs" aria-hidden="true"></i> Propiedades
+              Algebraicas
+            </h2>
+            <div class="card highlight">
+              <h3>Aplica propiedades algebraicas</h3>
+              <p>
+                Practica la aplicación de las propiedades conmutativa,
+                asociativa y distributiva.
+              </p>
+            </div>
+
+            <div class="exercise-container">
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 1: Propiedad distributiva</span
+                  >
+                  <span class="difficulty-badge difficulty-easy">Fácil</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> Aplica la propiedad distributiva
+                  en: 2(3x - 4)
+                </p>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="math-input"
+                    id="answer4a"
+                    placeholder="Ej: 6x-8"
+                  />
+                  <button
+                    class="btn"
+                    onclick="checkAlgebraAnswer('4a', '6x-8')"
+                  >
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('4a')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback4a"></div>
+                <div class="feedback hint" id="hint4a" style="display: none">
+                  Multiplica cada término dentro del paréntesis por 2: 2*3x y
+                  2*(-4)
+                </div>
+              </div>
+
+              <div class="exercise">
+                <div class="exercise-header">
+                  <span class="exercise-title"
+                    >Ejercicio 2: Identificación de propiedades</span
+                  >
+                  <span class="difficulty-badge difficulty-medium">Medio</span>
+                </div>
+                <p>
+                  <strong>Problema:</strong> ¿Qué propiedad se aplica en la
+                  expresión: (2x + 3y) + 4z = 2x + (3y + 4z)?
+                </p>
+                <div class="multiple-choice">
+                  <div class="option" onclick="selectOption(this, '4b')">
+                    <strong>A)</strong> Propiedad Conmutativa
+                  </div>
+                  <div
+                    class="option correct-option"
+                    onclick="selectOption(this, '4b')"
+                  >
+                    <strong>B)</strong> Propiedad Asociativa
+                  </div>
+                  <div class="option" onclick="selectOption(this, '4b')">
+                    <strong>C)</strong> Propiedad Distributiva
+                  </div>
+                  <div class="option" onclick="selectOption(this, '4b')">
+                    <strong>D)</strong> Propiedad de Identidad
+                  </div>
+                </div>
+                <div class="input-group">
+                  <button class="btn" onclick="checkMultipleChoice('4b', 'B')">
+                    Verificar
+                  </button>
+                  <button class="btn btn-hint" onclick="showHint('4b')">
+                    Pista
+                  </button>
+                </div>
+                <div class="feedback" id="feedback4b"></div>
+                <div class="feedback hint" id="hint4b" style="display: none">
+                  La propiedad asociativa establece que la forma de agrupar los
+                  términos no altera el resultado.
+                </div>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(3)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(1)">
+                Volver al inicio <i class="fas fa-home" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      let currentSection = 1;
+      const totalSections = 4;
+      let sectionCompletions = new Set(
+        JSON.parse(localStorage.getItem("sectionCompletions")) || []
+      );
+      let score = parseInt(localStorage.getItem("score")) || 0;
+      let exercisesCompleted =
+        parseInt(localStorage.getItem("exercisesCompleted")) || 0;
+      const MAX_SCORE = 100;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        createSectionProgress();
+        updateSidebarStatus();
+        updateSectionProgress();
+        loadProgress();
+      });
+
+      function loadProgress() {
+        sectionCompletions.forEach((sec) => showSection(sec, false));
+        document.getElementById("totalScore").textContent = score;
+        document.getElementById("accuracy").textContent = `${Math.round(
+          (score / MAX_SCORE) * 100
+        )}%`;
+        document.getElementById("exercisesCompleted").textContent =
+          exercisesCompleted;
+      }
+
+      function saveProgress() {
+        localStorage.setItem(
+          "sectionCompletions",
+          JSON.stringify(Array.from(sectionCompletions))
+        );
+        localStorage.setItem("score", score);
+        localStorage.setItem("exercisesCompleted", exercisesCompleted);
+      }
+
+      function createSectionProgress() {
+        const container = document.getElementById("sectionProgress");
+        container.innerHTML = "";
+        for (let i = 1; i <= totalSections; i++) {
+          const dot = document.createElement("div");
+          dot.className = "section-dot";
+          dot.dataset.section = i;
+          dot.onclick = () => showSection(i);
+          container.appendChild(dot);
+        }
+      }
+
+      function updateSectionProgress() {
+        document.querySelectorAll(".section-dot").forEach((dot) => {
+          const sectionNum = parseInt(dot.dataset.section);
+          dot.classList.remove("current", "completed");
+          if (sectionCompletions.has(sectionNum)) {
+            dot.classList.add("completed");
+          }
+          if (sectionNum === currentSection) {
+            dot.classList.add("current");
+          }
+        });
+      }
+
+      function updateSidebarStatus() {
+        const navItems = document.querySelectorAll(".nav-item");
+        const icons = ["🔍", "🧮", "📊", "⚖️"];
+        navItems.forEach((item, index) => {
+          const badge = item.querySelector(".status-badge");
+          item.classList.remove("active");
+          if (index + 1 === currentSection) {
+            item.classList.add("active");
+            badge.textContent = "📍";
+          } else if (sectionCompletions.has(index + 1)) {
+            badge.textContent = "✅";
+          } else {
+            badge.textContent = icons[index];
+          }
+        });
+      }
+
+      function showSection(sectionNum, update = true) {
+        if (sectionNum < 1 || sectionNum > totalSections) return;
+        document
+          .getElementById(`section${currentSection}`)
+          .classList.remove("active");
+        currentSection = sectionNum;
+        document
+          .getElementById(`section${currentSection}`)
+          .classList.add("active");
+        sectionCompletions.add(currentSection);
+        const progress = (sectionCompletions.size / totalSections) * 100;
+        document.getElementById("progressFill").style.width = `${progress}%`;
+        document.getElementById(
+          "progressText"
+        ).textContent = `Sección ${currentSection} de ${totalSections}`;
+        document.getElementById("completionRate").textContent = `${Math.round(
+          progress
+        )}% completado`;
+        updateSidebarStatus();
+        updateSectionProgress();
+        if (update) saveProgress();
+        window.scrollTo(0, 0);
+      }
+
+      function selectOption(optionElement, questionId) {
+        // Deseleccionar todas las opciones de esta pregunta
+        const options = optionElement.parentElement.querySelectorAll(".option");
+        options.forEach((opt) => {
+          opt.classList.remove("selected");
+        });
+
+        // Seleccionar la opción clickeada
+        optionElement.classList.add("selected");
+
+        // Guardar la selección
+        optionElement.dataset.selected = true;
+      }
+
+      function checkMultipleChoice(questionNum, correctAnswer) {
+        const options = document
+          .querySelectorAll(`#feedback${questionNum}`)
+          .closest(".exercise")
+          .querySelectorAll(".option");
+        let selectedOption = null;
+
+        options.forEach((option) => {
+          if (option.classList.contains("selected")) {
+            selectedOption = option;
+          }
+          option.classList.remove("correct", "incorrect");
+        });
+
+        const feedback = document.getElementById(`feedback${questionNum}`);
+        const exercise = document
+          .getElementById(`feedback${questionNum}`)
+          .closest(".exercise");
+
+        if (!selectedOption) {
+          showFeedback(
+            feedback,
+            `<i class="fas fa-exclamation-circle"></i> Por favor selecciona una opción.`,
+            "incorrect"
+          );
+          return;
+        }
+
+        const userAnswer = selectedOption.textContent.trim().charAt(0);
+        let explanation = "";
+
+        if (questionNum === "1a")
+          explanation =
+            "Las variables son x e y (letras), las constantes son 3, 2 y -5 (números).";
+        if (questionNum === "1b")
+          explanation =
+            "3x y -5x son semejantes porque ambos tienen la variable x con exponente 1.";
+        if (questionNum === "4b")
+          explanation =
+            "La propiedad asociativa establece que la forma de agrupar los términos no altera el resultado.";
+
+        if (userAnswer === correctAnswer) {
+          showFeedback(
+            feedback,
+            `<i class="fas fa-check-circle"></i> ¡Correcto! ${explanation}`,
+            "correct"
+          );
+          selectedOption.classList.add("correct");
+          exercise.classList.add("completed");
+          score = Math.min(MAX_SCORE, score + 10);
+          exercisesCompleted++;
+          updateScoreDisplay();
+          saveProgress();
+        } else {
+          showFeedback(
+            feedback,
+            `<i class="fas fa-times-circle"></i> Incorrecto. ${explanation}`,
+            "incorrect"
+          );
+          selectedOption.classList.add("incorrect");
+
+          // Marcar la opción correcta
+          options.forEach((option) => {
+            if (option.textContent.trim().charAt(0) === correctAnswer) {
+              option.classList.add("correct");
+            }
+          });
+        }
+      }
+
+      function checkAnswer(questionNum, correctAnswer) {
+        const userAnswer = parseInt(
+          document.getElementById(`answer${questionNum}`).value
+        );
+        const feedback = document.getElementById(`feedback${questionNum}`);
+        const exercise = document
+          .getElementById(`answer${questionNum}`)
+          .closest(".exercise");
+        let explanation = "";
+
+        if (questionNum === "3a") explanation = "3(2) + 4 = 6 + 4 = 10";
+        if (questionNum === "3b")
+          explanation = "2(3) + 3(2) - 1 = 6 + 6 - 1 = 11";
+
+        if (userAnswer === correctAnswer) {
+          showFeedback(
+            feedback,
+            `<i class="fas fa-check-circle"></i> ¡Correcto! ${explanation}`,
+            "correct"
+          );
+          if (exercise) exercise.classList.add("completed");
+          score = Math.min(MAX_SCORE, score + 10);
+          exercisesCompleted++;
+          updateScoreDisplay();
+          saveProgress();
+        } else {
+          showFeedback(
+            feedback,
+            `<i class="fas fa-times-circle"></i> Incorrecto. ${explanation}`,
+            "incorrect"
+          );
+        }
+      }
+
+      function checkAlgebraAnswer(questionNum, correctAnswer) {
+        const userAnswer = document
+          .getElementById(`answer${questionNum}`)
+          .value.replace(/\s/g, "");
+        const feedback = document.getElementById(`feedback${questionNum}`);
+        const exercise = document
+          .getElementById(`answer${questionNum}`)
+          .closest(".exercise");
+        let explanation = "";
+
+        if (questionNum === "2a")
+          explanation = "3x + 2y - x + 4y = (3x - x) + (2y + 4y) = 2x + 6y";
+        if (questionNum === "2b")
+          explanation =
+            "2x² + 3xy - x² + 2xy - 5y = (2x² - x²) + (3xy + 2xy) - 5y = x² + 5xy - 5y";
+        if (questionNum === "4a")
+          explanation = "2(3x - 4) = 2*3x + 2*(-4) = 6x - 8";
+
+        if (userAnswer === correctAnswer) {
+          showFeedback(
+            feedback,
+            `<i class="fas fa-check-circle"></i> ¡Correcto! ${explanation}`,
+            "correct"
+          );
+          if (exercise) exercise.classList.add("completed");
+          score = Math.min(MAX_SCORE, score + 10);
+          exercisesCompleted++;
+          updateScoreDisplay();
+          saveProgress();
+        } else {
+          showFeedback(
+            feedback,
+            `<i class="fas fa-times-circle"></i> Incorrecto. ${explanation}`,
+            "incorrect"
+          );
+        }
+      }
+
+      function showFeedback(feedbackElement, message, type) {
+        feedbackElement.className = `feedback ${type} show`;
+        feedbackElement.innerHTML = message;
+      }
+
+      function updateScoreDisplay() {
+        document.getElementById("totalScore").textContent = score;
+        document.getElementById("accuracy").textContent = `${Math.round(
+          (score / MAX_SCORE) * 100
+        )}%`;
+        document.getElementById("exercisesCompleted").textContent =
+          exercisesCompleted;
+      }
+
+      function showHint(hintNum) {
+        const hint = document.getElementById(`hint${hintNum}`);
+        if (hint) {
+          hint.style.display = "block";
+        }
+      }
+    </script>
+  </body>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const module = params.get("module");
+      if (!module) return;
+      const parts = module.split("-");
+      if (parts.length >= 2) {
+        const subject = parts.slice(1).join(" ");
+        const headerTitle = document.querySelector(".header h1");
+        if (headerTitle) {
+          headerTitle.innerHTML = `<i class="fas fa-pen-to-square"></i> Ejercicios de Práctica: ${subject.replace(
+            /\b\w/g,
+            (c) => c.toUpperCase()
+          )}`;
+        }
+        document.title = `Ejercicios - ${subject}`;
+      }
+    })();
+  </script>
+</html>

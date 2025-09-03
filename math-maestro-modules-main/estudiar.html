@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estudiar Temas - Expresiones Algebraicas</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+          --primary-color: #4ecdc4;
+          --secondary-color: #667eea;
+          --accent-color: #ff6b6b;
+          --success-color: #2ecc71;
+          --warning-color: #f39c12;
+          --error-color: #e74c3c;
+          --text-color: #2c3e50;
+          --bg-light: #f8f9fa;
+          --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, var(--secondary-color) 0%, #764ba2 100%);
+          min-height: 100vh;
+          color: var(--text-color);
+          line-height: 1.6;
+          padding: 20px;
+      }
+
+      .app-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          background: white;
+          min-height: 90vh;
+          box-shadow: var(--shadow-hover);
+          border-radius: 20px;
+          overflow-x: hidden;
+          position: relative;
+      }
+
+      .header {
+          background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+          color: white;
+          text-align: center;
+          padding: 2rem;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          box-shadow: var(--shadow);
+      }
+
+      .header h1 {
+          font-size: 2.5rem;
+          margin-bottom: 0.5rem;
+          font-weight: 700;
+      }
+
+      .header p {
+          font-size: 1.1rem;
+          opacity: 0.9;
+      }
+
+      .progress-container {
+          padding: 1rem 2rem;
+          background: white;
+          border-bottom: 1px solid #eee;
+          position: sticky;
+          top: 140px;
+          z-index: 99;
+          display: flex;
+          flex-direction: column;
+      }
+
+      .progress-bar {
+          width: 100%;
+          height: 8px;
+          background: #e9ecef;
+          border-radius: 4px;
+          overflow: hidden;
+          margin-bottom: 1rem;
+      }
+
+      .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+          width: 0%;
+          transition: width 0.5s ease;
+      }
+
+      .progress-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.9rem;
+          color: #666;
+      }
+
+      .section-progress {
+          display: flex;
+          gap: 5px;
+          margin-top: 10px;
+      }
+
+      .section-dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #e9ecef;
+          cursor: pointer;
+          transition: all 0.3s;
+      }
+
+      .section-dot.completed {
+          background: var(--success-color);
+      }
+
+      .section-dot.current {
+          background: var(--primary-color);
+          transform: scale(1.2);
+      }
+
+      .main-content {
+          display: flex;
+          min-height: calc(100vh - 200px);
+      }
+
+      .sidebar {
+          width: 280px;
+          background: var(--bg-light);
+          padding: 2rem 1.5rem;
+          border-right: 1px solid #dee2e6;
+          position: sticky;
+          top: 200px;
+          height: fit-content;
+          overflow-y: auto;
+          max-height: calc(100vh - 200px);
+      }
+
+      .sidebar h3 {
+          color: var(--text-color);
+          margin-bottom: 1rem;
+          font-size: 1.1rem;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+
+      .nav-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem 1rem;
+          margin-bottom: 0.5rem;
+          border-radius: 8px;
+          text-decoration: none;
+          color: #666;
+          border: 2px solid transparent;
+          position: relative;
+          background: white;
+          cursor: pointer;
+      }
+
+      .nav-item.active {
+          background: var(--primary-color);
+          color: white;
+          border-color: var(--secondary-color);
+          font-weight: bold;
+      }
+
+      .nav-item:hover:not(.active) {
+          background: #f0faff;
+          color: var(--primary-color);
+          transform: translateX(3px);
+          transition: all 0.2s ease;
+      }
+
+      .content-area {
+          flex: 1;
+          padding: 2rem;
+          position: relative;
+      }
+
+      .section {
+          display: none;
+          animation: fadeIn 0.5s ease-in;
+      }
+
+      .section.active {
+          display: block;
+      }
+
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      .section h2 {
+          color: var(--text-color);
+          margin-bottom: 2rem;
+          font-size: 2rem;
+          border-bottom: 3px solid var(--primary-color);
+          padding-bottom: 0.5rem;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+
+      .card {
+          background: white;
+          border-radius: 12px;
+          padding: 2rem;
+          margin-bottom: 2rem;
+          box-shadow: var(--shadow);
+          border: 1px solid #e9ecef;
+          transition: all 0.3s ease;
+      }
+
+      .card:hover {
+          box-shadow: var(--shadow-hover);
+          transform: translateY(-2px);
+      }
+
+      .card.highlight {
+          border-left: 5px solid var(--primary-color);
+          background: linear-gradient(135deg, #f8f9ff, #fff);
+      }
+
+      .card.warning {
+          border-left: 5px solid var(--warning-color);
+          background: linear-gradient(135deg, #fffdf7, #fff);
+      }
+
+      .card.success {
+          border-left: 5px solid var(--success-color);
+          background: linear-gradient(135deg, #f7fff7, #fff);
+      }
+
+      .interactive-place-value {
+          background: linear-gradient(135deg, #f1f3f4, #e8eaf6);
+          border-radius: 12px;
+          padding: 2rem;
+          margin: 2rem 0;
+          overflow-x: auto;
+      }
+
+      .place-value-input-container {
+          text-align: center;
+          margin-bottom: 1.5rem;
+      }
+
+      .place-value-input {
+          width: 250px;
+          padding: 0.75rem;
+          border: 2px solid #ccc;
+          border-radius: 8px;
+          font-size: 1.5rem;
+          text-align: center;
+      }
+
+      .place-value-chart {
+          display: flex;
+          justify-content: center;
+          gap: 5px;
+          flex-wrap: nowrap;
+      }
+
+      .place-value-box {
+          background: white;
+          border-radius: 8px;
+          text-align: center;
+          box-shadow: var(--shadow);
+          width: 80px;
+          flex-shrink: 0;
+      }
+
+      .place-value-digit {
+          font-size: 2.5rem;
+          font-weight: bold;
+          padding: 1rem;
+          color: var(--primary-color);
+      }
+
+      .place-value-label {
+          font-size: 0.8rem;
+          background: var(--primary-color);
+          color: white;
+          padding: 0.5rem;
+          border-bottom-left-radius: 8px;
+          border-bottom-right-radius: 8px;
+      }
+
+      .exercise-container {
+          background: var(--bg-light);
+          border-radius: 12px;
+          padding: 2rem;
+          margin: 2rem 0;
+      }
+
+      .exercise {
+          background: white;
+          border-radius: 10px;
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+          border: 2px solid #e9ecef;
+          transition: all 0.3s ease;
+          position: relative;
+      }
+
+      .exercise:hover {
+          border-color: var(--primary-color);
+      }
+
+      .exercise.completed {
+          border-color: var(--success-color);
+          background: linear-gradient(135deg, #f7fff7, #fff);
+      }
+
+      .exercise-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+          flex-wrap: wrap;
+          gap: 10px;
+      }
+
+      .exercise-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: var(--text-color);
+      }
+
+      .difficulty-badge {
+          padding: 0.25rem 0.75rem;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 500;
+      }
+
+      .difficulty-easy {
+          background: #d4edda;
+          color: #155724;
+      }
+
+      .difficulty-medium {
+          background: #fff3cd;
+          color: #856404;
+      }
+
+      .difficulty-hard {
+          background: #f8d7da;
+          color: #721c24;
+      }
+
+      .step-by-step {
+          background: #f8f9ff;
+          border: 1px solid #e1e5fe;
+          border-radius: 8px;
+          padding: 1.5rem;
+          margin: 1rem 0;
+      }
+
+      .step {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+          padding: 0.75rem;
+          background: white;
+          border-radius: 6px;
+          border-left: 4px solid var(--primary-color);
+      }
+
+      .step-number {
+          background: var(--primary-color);
+          color: white;
+          min-width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          margin-right: 1rem;
+          flex-shrink: 0;
+      }
+
+      .input-group {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin: 1.5rem 0;
+          flex-wrap: wrap;
+      }
+
+      .math-input {
+          width: 150px;
+          padding: 0.75rem;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          font-size: 1.1rem;
+          text-align: center;
+          transition: all 0.3s ease;
+      }
+
+      .math-input:focus {
+          outline: none;
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+      }
+
+      .btn {
+          background: var(--primary-color);
+          color: white;
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .btn:hover {
+          background: #45b7aa;
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-hover);
+      }
+
+      .btn:active {
+          transform: translateY(0);
+      }
+
+      .btn-secondary {
+          background: #6c757d;
+      }
+
+      .btn-secondary:hover {
+          background: #5a6268;
+      }
+
+      .btn-hint {
+          background: var(--warning-color);
+      }
+
+      .btn-hint:hover {
+          background: #e67e22;
+      }
+
+      .feedback {
+          margin-top: 1rem;
+          padding: 1rem;
+          border-radius: 8px;
+          font-weight: 500;
+          display: none;
+      }
+
+      .feedback.show {
+          display: block;
+          animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      .feedback.correct {
+          background: linear-gradient(135deg, #d4edda, #c3e6cb);
+          color: #155724;
+          border: 1px solid #c3e6cb;
+      }
+
+      .feedback.incorrect {
+          background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+          color: #721c24;
+          border: 1px solid #f5c6cb);
+      }
+
+      .feedback.hint {
+          background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+          color: #856404;
+          border: 1px solid #ffeaa7;
+      }
+
+      .stats-panel {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin: 2rem 0;
+      }
+
+      .stat-card {
+          background: white;
+          padding: 1.5rem;
+          border-radius: 12px;
+          text-align: center;
+          border: 1px solid #e9ecef;
+          box-shadow: var(--shadow);
+      }
+
+      .stat-number {
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: var(--primary-color);
+          display: block;
+      }
+
+      .stat-label {
+          font-size: 0.9rem;
+          color: #666;
+          margin-top: 0.5rem;
+      }
+
+      .reference-card {
+          background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+          border: 1px solid #bbdefb;
+          border-radius: 12px;
+          padding: 1.5rem;
+          margin: 1rem 0;
+      }
+
+      .reference-title {
+          font-weight: bold;
+          color: var(--text-color);
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      code {
+          background: #e9ecef;
+          padding: 0.25rem 0.5rem;
+          border-radius: 4px;
+          font-family: 'Courier New', Courier, monospace;
+          color: #e83e8c;
+          display: inline-block;
+          margin-top: 5px;
+      }
+
+      .visual-example {
+          background: white;
+          border-radius: 10px;
+          padding: 2rem;
+          margin: 1.5rem 0;
+          text-align: center;
+          border: 2px dashed var(--primary-color);
+      }
+
+      .nav-buttons {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 2rem;
+      }
+
+      .expression-input {
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e9ecef;
+          border-radius: 8px;
+          font-size: 1.1rem;
+          font-family: 'Courier New', monospace;
+          margin-bottom: 1rem;
+      }
+
+      .algebra-visualization {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          margin: 1.5rem 0;
+          flex-wrap: wrap;
+      }
+
+      .algebra-term {
+          background: white;
+          border-radius: 8px;
+          padding: 1rem;
+          box-shadow: var(--shadow);
+          text-align: center;
+          min-width: 80px;
+      }
+
+      .term-coefficient {
+          font-weight: bold;
+          color: var(--primary-color);
+      }
+
+      .term-variable {
+          color: var(--secondary-color);
+      }
+
+      .term-operator {
+          font-size: 1.5rem;
+          align-self: center;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+          body { padding: 10px; }
+          .app-container { border-radius: 10px; min-height: calc(100vh - 20px); }
+          .header h1 { font-size: 1.5rem; }
+          .header p { font-size: 0.9rem; }
+          .header { padding: 1.5rem 1rem; }
+          .main-content { flex-direction: column; }
+          .sidebar {
+              width: 100%;
+              position: static;
+              order: 2;
+              padding: 1rem;
+              max-height: none;
+              height: auto;
+              border-right: none;
+              border-top: 1px solid #dee2e6;
+          }
+          .content-area { padding: 1rem; order: 1; }
+          .progress-container { padding: 0.75rem 1rem; position: static; }
+          .input-group { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+          .math-input { width: 100%; max-width: 200px; margin: 0 auto; }
+          .btn { width: 100%; max-width: 220px; margin: 0 auto; padding: 0.75rem; justify-content: center; }
+          .card { padding: 1.25rem; margin-bottom: 1.5rem; }
+          .section h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+          .stats-panel { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+          .nav-buttons { flex-direction: column; gap: 1rem; }
+          .nav-buttons .btn { width: 100%; }
+          .exercise-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      }
+
+      @media (max-width: 480px) {
+          .header h1 { font-size: 1.3rem; }
+          .stats-panel { grid-template-columns: 1fr; }
+          .card { padding: 1rem; }
+          .section h2 { font-size: 1.3rem; }
+          .place-value-input { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="header">
+        <h1>
+          <i class="fas fa-square-root-alt" aria-hidden="true"></i> Estudiar
+          Temas: Expresiones Algebraicas
+        </h1>
+        <p>Material de estudio teórico para aprendizaje autónomo</p>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-info">
+          <span id="progressText">Sección 1 de 8</span>
+          <span id="completionRate">0% completado</span>
+        </div>
+        <div class="section-progress" id="sectionProgress"></div>
+      </div>
+
+      <div class="main-content">
+        <nav class="sidebar" aria-label="Navegación principal">
+          <h3>
+            <i class="fas fa-book" aria-hidden="true"></i> Índice del Módulo
+          </h3>
+          <div class="nav-item active" onclick="showSection(1)">
+            <span>1. Objetivos</span><span class="status-badge">📋</span>
+          </div>
+          <div class="nav-item" onclick="showSection(2)">
+            <span>2. Variables y Constantes</span
+            ><span class="status-badge">📖</span>
+          </div>
+          <div class="nav-item" onclick="showSection(3)">
+            <span>3. Términos Semejantes</span
+            ><span class="status-badge">⚡</span>
+          </div>
+          <div class="nav-item" onclick="showSection(4)">
+            <span>4. Simplificación</span><span class="status-badge">🎯</span>
+          </div>
+          <div class="nav-item" onclick="showSection(5)">
+            <span>5. Evaluación</span><span class="status-badge">🚀</span>
+          </div>
+          <div class="nav-item" onclick="showSection(6)">
+            <span>6. Propiedades</span><span class="status-badge">🏆</span>
+          </div>
+          <div class="nav-item" onclick="showSection(7)">
+            <span>7. Resumen</span><span class="status-badge">📋</span>
+          </div>
+          <div class="nav-item" onclick="showSection(8)">
+            <span>8. Glosario</span><span class="status-badge">🔍</span>
+          </div>
+          <div class="stats-panel" style="margin-top: 2rem">
+            <div class="stat-card">
+              <span class="stat-number" id="totalScore">0</span>
+              <span class="stat-label">Puntos</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-number" id="accuracy">0%</span>
+              <span class="stat-label">Precisión</span>
+            </div>
+          </div>
+        </nav>
+
+        <main class="content-area" role="main">
+          <!-- Sección 1: Objetivos -->
+          <section class="section active" id="section1">
+            <h2>
+              <i class="fas fa-bullseye" aria-hidden="true"></i> Objetivos de
+              Aprendizaje (SMART)
+            </h2>
+            <div class="card highlight">
+              <h3>
+                Al completar este módulo, serás capaz de (Específicos, Medibles,
+                Alcanzables, Relevantes, Temporales):
+              </h3>
+              <ul style="margin-left: 1.5rem; line-height: 2">
+                <li>
+                  <i
+                    class="fas fa-check-circle"
+                    style="color: var(--success-color)"
+                  ></i>
+                  <strong>Diferenciar</strong> entre variables y constantes,
+                  identificando al menos 10 ejemplos en 15 minutos.
+                </li>
+                <li>
+                  <i
+                    class="fas fa-check-circle"
+                    style="color: var(--success-color)"
+                  ></i>
+                  <strong>Identificar</strong> términos semejantes en
+                  expresiones algebraicas con precisión del 90%.
+                </li>
+                <li>
+                  <i
+                    class="fas fa-check-circle"
+                    style="color: var(--success-color)"
+                  ></i>
+                  <strong>Simplificar</strong> expresiones algebraicas
+                  combinando términos semejantes correctamente.
+                </li>
+                <li>
+                  <i
+                    class="fas fa-check-circle"
+                    style="color: var(--success-color)"
+                  ></i>
+                  <strong>Evaluar</strong> expresiones algebraicas sustituyendo
+                  valores en las variables.
+                </li>
+                <li>
+                  <i
+                    class="fas fa-check-circle"
+                    style="color: var(--success-color)"
+                  ></i>
+                  <strong>Aplicar</strong> las propiedades conmutativa,
+                  asociativa y distributiva en expresiones algebraicas.
+                </li>
+                <li>
+                  <i
+                    class="fas fa-check-circle"
+                    style="color: var(--success-color)"
+                  ></i>
+                  <strong>Resolver</strong> problemas del mundo real utilizando
+                  expresiones algebraicas.
+                </li>
+              </ul>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" disabled aria-disabled="true">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(2)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 2: Variables y Constantes -->
+          <section class="section" id="section2">
+            <h2>
+              <i class="fas fa-book" aria-hidden="true"></i> Variables y
+              Constantes
+            </h2>
+            <div class="card">
+              <h3>¿Qué son las variables y constantes?</h3>
+              <p>
+                En álgebra, una <strong>variable</strong> es un símbolo
+                (generalmente una letra) que representa un número desconocido o
+                que puede variar. Una <strong>constante</strong> es un valor
+                fijo que no cambia.
+              </p>
+              <div class="reference-card">
+                <p><strong>Ejemplos:</strong></p>
+                <ul>
+                  <li>
+                    <strong>Variables:</strong> x, y, z, a, b (representan
+                    valores desconocidos o cambiantes)
+                  </li>
+                  <li>
+                    <strong>Constantes:</strong> 2, -5, 3.14, π (valores fijos)
+                  </li>
+                  <li>
+                    <strong>Expresión algebraica:</strong> 3x + 2y - 5 (contiene
+                    variables y constantes)
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card">
+              <h3>
+                <i class="fas fa-th" aria-hidden="true"></i> Identificador
+                Interactivo
+              </h3>
+              <p>
+                Escribe una expresión algebraica para identificar sus
+                componentes.
+              </p>
+              <div class="interactive-place-value">
+                <div class="place-value-input-container">
+                  <input
+                    type="text"
+                    id="expressionInput"
+                    class="expression-input"
+                    placeholder="Ej: 3x + 2y - 5"
+                    oninput="analyzeExpression(this.value)"
+                  />
+                </div>
+                <div id="expressionAnalysis">
+                  <!-- Se generará dinámicamente -->
+                </div>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(1)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(3)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 3: Términos Semejantes -->
+          <section class="section" id="section3">
+            <h2>
+              <i class="fas fa-bolt" aria-hidden="true"></i> Términos Semejantes
+            </h2>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-object-group" aria-hidden="true"></i> ¿Qué son
+                términos semejantes?
+              </h3>
+              <p>
+                Los términos semejantes son aquellos que tienen las mismas
+                variables elevadas a los mismos exponentes. Solo los
+                coeficientes (números) pueden diferir.
+              </p>
+              <div class="step-by-step">
+                <div class="step">
+                  <div class="step-number">1</div>
+                  <div>
+                    <strong>Identificación:</strong> Busca términos con las
+                    mismas variables y exponentes. <br /><code
+                      >Ej: 3x²y y -5x²y son semejantes</code
+                    >
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-number">2</div>
+                  <div>
+                    <strong>Diferencia:</strong> 3x²y y 3xy² NO son semejantes
+                    (exponentes diferentes).
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-sync-alt" aria-hidden="true"></i> Visualización
+                de Términos
+              </h3>
+              <div class="algebra-visualization" id="termsVisualization">
+                <div class="algebra-term">
+                  <div class="term-coefficient">3</div>
+                  <div class="term-variable">x²</div>
+                </div>
+                <div class="term-operator">+</div>
+                <div class="algebra-term">
+                  <div class="term-coefficient">2</div>
+                  <div class="term-variable">x²</div>
+                </div>
+                <div class="term-operator">=</div>
+                <div class="algebra-term">
+                  <div class="term-coefficient">5</div>
+                  <div class="term-variable">x²</div>
+                </div>
+              </div>
+              <p class="text-center">
+                Los términos 3x² y 2x² son semejantes y se pueden combinar para
+                formar 5x²
+              </p>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(2)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(4)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 4: Simplificación -->
+          <section class="section" id="section4">
+            <h2>
+              <i class="fas fa-tasks" aria-hidden="true"></i> Simplificación de
+              Expresiones
+            </h2>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-compress-arrows-alt" aria-hidden="true"></i>
+                Cómo simplificar expresiones
+              </h3>
+              <p>
+                Para simplificar una expresión algebraica, debemos combinar
+                todos los términos semejantes siguiendo estos pasos:
+              </p>
+              <div class="step-by-step">
+                <div class="step">
+                  <div class="step-number">1</div>
+                  <div>
+                    <strong>Identificar:</strong> Encuentra todos los términos
+                    semejantes en la expresión.
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-number">2</div>
+                  <div>
+                    <strong>Agrupar:</strong> Reúne los términos semejantes.
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-number">3</div>
+                  <div>
+                    <strong>Combinar:</strong> Suma o resta los coeficientes de
+                    los términos semejantes.
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-number">4</div>
+                  <div>
+                    <strong>Reescribir:</strong> Escribe la expresión
+                    simplificada.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(3)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(5)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 5: Evaluación -->
+          <section class="section" id="section5">
+            <h2>
+              <i class="fas fa-calculator" aria-hidden="true"></i> Evaluación de
+              Expresiones
+            </h2>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-exchange-alt" aria-hidden="true"></i> Cómo
+                evaluar expresiones algebraicas
+              </h3>
+              <p>
+                Evaluar una expresión algebraica significa sustituir las
+                variables por valores específicos y calcular el resultado.
+              </p>
+              <div class="step-by-step">
+                <div class="step">
+                  <div class="step-number">1</div>
+                  <div>
+                    <strong>Sustitución:</strong> Reemplaza cada variable con el
+                    valor dado.
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-number">2</div>
+                  <div>
+                    <strong>Cálculo:</strong> Realiza las operaciones siguiendo
+                    el orden correcto (PEMDAS).
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-number">3</div>
+                  <div>
+                    <strong>Simplificación:</strong> Reduce la expresión a un
+                    valor numérico simple.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(4)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(6)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 6: Propiedades -->
+          <section class="section" id="section6">
+            <h2>
+              <i class="fas fa-cogs" aria-hidden="true"></i> Propiedades
+              Algebraicas
+            </h2>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-sync-alt" aria-hidden="true"></i> Propiedades
+                en Álgebra
+              </h3>
+              <p>
+                Las propiedades algebraicas nos permiten manipular expresiones
+                sin cambiar su valor. Son fundamentales para simplificar y
+                resolver ecuaciones.
+              </p>
+            </div>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-people-arrows" aria-hidden="true"></i>
+                Propiedad Conmutativa
+              </h3>
+              <div class="reference-card">
+                <p>
+                  El orden de los términos no altera el resultado en la suma y
+                  multiplicación.
+                </p>
+                <code>a + b = b + a</code><br />
+                <code>a * b = b * a</code>
+                <p><strong>Ejemplo:</strong> 3x + 2y = 2y + 3x</p>
+              </div>
+            </div>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-object-group" aria-hidden="true"></i> Propiedad
+                Asociativa
+              </h3>
+              <div class="reference-card">
+                <p>
+                  La forma de agrupar los términos no altera el resultado en
+                  suma y multiplicación.
+                </p>
+                <code>(a + b) + c = a + (b + c)</code><br />
+                <code>(a * b) * c = a * (b * c)</code>
+                <p><strong>Ejemplo:</strong> (2x + 3y) + 4z = 2x + (3y + 4z)</p>
+              </div>
+            </div>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-expand-arrows-alt" aria-hidden="true"></i>
+                Propiedad Distributiva
+              </h3>
+              <div class="reference-card">
+                <p>
+                  Un factor multiplicado por una suma es igual a la suma de ese
+                  factor multiplicado por cada término.
+                </p>
+                <code>a * (b + c) = a * b + a * c</code>
+                <p><strong>Ejemplo:</strong> 3(x + 2) = 3x + 6</p>
+              </div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(5)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(7)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 7: Resumen -->
+          <section class="section" id="section7">
+            <h2>
+              <i class="fas fa-file-alt" aria-hidden="true"></i> Resumen y
+              Recursos
+            </h2>
+            <div class="card highlight">
+              <h3>
+                <i class="fas fa-check-circle" aria-hidden="true"></i> Conceptos
+                Clave Dominados
+              </h3>
+              <div class="reference-card">
+                <ul style="line-height: 2">
+                  <li>
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    <strong>Variables y Constantes:</strong> Símbolos que
+                    representan valores desconocidos y valores fijos.
+                  </li>
+                  <li>
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    <strong>Términos Semejantes:</strong> Términos con las
+                    mismas variables y exponentes.
+                  </li>
+                  <li>
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    <strong>Simplificación:</strong> Combinar términos
+                    semejantes para reducir expresiones.
+                  </li>
+                  <li>
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    <strong>Evaluación:</strong> Sustituir variables por valores
+                    y calcular el resultado.
+                  </li>
+                  <li>
+                    <i class="fas fa-check" aria-hidden="true"></i>
+                    <strong>Propiedades Algebraicas:</strong> Conmutativa,
+                    Asociativa y Distributiva.
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="visual-example">
+              <h3>
+                <i class="fas fa-trophy" aria-hidden="true"></i>
+                ¡Felicitaciones!
+              </h3>
+              <p>
+                Has completado exitosamente el módulo de estudio de Expresiones
+                Algebraicas.
+              </p>
+              <div style="font-size: 3rem; margin: 1rem 0">🏆</div>
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(6)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(8)">
+                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Sección 8: Glosario y Referencias -->
+          <section class="section" id="section8">
+            <h2>
+              <i class="fas fa-search" aria-hidden="true"></i> Glosario y
+              Referencias
+            </h2>
+            <div class="card">
+              <h3>Glosario</h3>
+              <dl>
+                <dt>Variable</dt>
+                <dd>
+                  Símbolo (generalmente una letra) que representa un valor
+                  desconocido o variable.
+                </dd>
+                <dt>Constante</dt>
+                <dd>Valor fijo que no cambia en una expresión algebraica.</dd>
+                <dt>Término Algebraico</dt>
+                <dd>
+                  Parte de una expresión separada por signos + o -, que puede
+                  contener constantes, variables o ambos.
+                </dd>
+                <dt>Términos Semejantes</dt>
+                <dd>
+                  Términos que tienen las mismas variables elevadas a los mismos
+                  exponentes.
+                </dd>
+                <dt>Simplificación</dt>
+                <dd>
+                  Proceso de combinar términos semejantes para reducir una
+                  expresión a su forma más simple.
+                </dd>
+                <dt>Evaluación</dt>
+                <dd>
+                  Proceso de sustituir variables por valores específicos y
+                  calcular el resultado.
+                </dd>
+                <dt>Propiedad Distributiva</dt>
+                <dd>
+                  a(b + c) = ab + ac. Un factor multiplicado por una suma es
+                  igual a la suma de las multiplicaciones.
+                </dd>
+              </dl>
+            </div>
+            <div class="card">
+              <h3>Referencias</h3>
+              <ul>
+                <li>Baldor, A. (1941). <em>Álgebra</em>. Editorial Patria.</li>
+                <li>
+                  Stewart, J. (2012). <em>Álgebra y Trigonometría</em>. Cengage
+                  Learning.
+                </li>
+                <li>Khan Academy: Álgebra (khanacademy.org).</li>
+              </ul>
+            </div>
+
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" onclick="showSection(7)">
+                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
+              </button>
+              <button class="btn" onclick="showSection(1)">
+                Volver al inicio <i class="fas fa-home" aria-hidden="true"></i>
+              </button>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      let currentSection = 1;
+      const totalSections = 8;
+      let sectionCompletions = new Set(
+        JSON.parse(localStorage.getItem("sectionCompletions")) || []
+      );
+      let score = parseInt(localStorage.getItem("score")) || 0;
+      const MAX_SCORE = 100;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        createSectionProgress();
+        updateSidebarStatus();
+        updateSectionProgress();
+        loadProgress();
+        document.getElementById("certScore").textContent = score;
+      });
+
+      function loadProgress() {
+        sectionCompletions.forEach((sec) => showSection(sec, false));
+        document.getElementById("totalScore").textContent = score;
+        document.getElementById("accuracy").textContent = `${Math.round(
+          (score / MAX_SCORE) * 100
+        )}%`;
+      }
+
+      function saveProgress() {
+        localStorage.setItem(
+          "sectionCompletions",
+          JSON.stringify(Array.from(sectionCompletions))
+        );
+        localStorage.setItem("score", score);
+      }
+
+      function createSectionProgress() {
+        const container = document.getElementById("sectionProgress");
+        container.innerHTML = "";
+        for (let i = 1; i <= totalSections; i++) {
+          const dot = document.createElement("div");
+          dot.className = "section-dot";
+          dot.dataset.section = i;
+          dot.onclick = () => showSection(i);
+          container.appendChild(dot);
+        }
+      }
+
+      function updateSectionProgress() {
+        document.querySelectorAll(".section-dot").forEach((dot) => {
+          const sectionNum = parseInt(dot.dataset.section);
+          dot.classList.remove("current", "completed");
+          if (sectionCompletions.has(sectionNum)) {
+            dot.classList.add("completed");
+          }
+          if (sectionNum === currentSection) {
+            dot.classList.add("current");
+          }
+        });
+      }
+
+      function updateSidebarStatus() {
+        const navItems = document.querySelectorAll(".nav-item");
+        const icons = ["📋", "📖", "⚡", "🎯", "🚀", "🏆", "📋", "🔍"];
+        navItems.forEach((item, index) => {
+          const badge = item.querySelector(".status-badge");
+          item.classList.remove("active");
+          if (index + 1 === currentSection) {
+            item.classList.add("active");
+            badge.textContent = "📍";
+          } else if (sectionCompletions.has(index + 1)) {
+            badge.textContent = "✅";
+          } else {
+            badge.textContent = icons[index];
+          }
+        });
+      }
+
+      function showSection(sectionNum, update = true) {
+        if (sectionNum < 1 || sectionNum > totalSections) return;
+        document
+          .getElementById(`section${currentSection}`)
+          .classList.remove("active");
+        currentSection = sectionNum;
+        document
+          .getElementById(`section${currentSection}`)
+          .classList.add("active");
+        sectionCompletions.add(currentSection);
+        const progress = (sectionCompletions.size / totalSections) * 100;
+        document.getElementById("progressFill").style.width = `${progress}%`;
+        document.getElementById(
+          "progressText"
+        ).textContent = `Sección ${currentSection} de ${totalSections}`;
+        document.getElementById("completionRate").textContent = `${Math.round(
+          progress
+        )}% completado`;
+        updateSidebarStatus();
+        updateSectionProgress();
+        if (update) saveProgress();
+        window.scrollTo(0, 0);
+      }
+
+      function analyzeExpression(expression) {
+        const analysisDiv = document.getElementById("expressionAnalysis");
+        if (!expression) {
+          analysisDiv.innerHTML = "<p>Ingresa una expresión para analizar.</p>";
+          return;
+        }
+
+        // Análisis simple de la expresión
+        const terms = expression
+          .split(/[+-]/)
+          .filter((term) => term.trim() !== "");
+        const variables = [];
+        const constants = [];
+
+        terms.forEach((term) => {
+          term = term.trim();
+          if (term.match(/[a-zA-Z]/)) {
+            variables.push(term);
+          } else if (!isNaN(term)) {
+            constants.push(term);
+          }
+        });
+
+        let analysisHTML =
+          '<div class="reference-card"><p><strong>Análisis:</strong></p><ul>';
+
+        if (variables.length > 0) {
+          analysisHTML += `<li><strong>Variables:</strong> ${variables.join(
+            ", "
+          )}</li>`;
+        }
+
+        if (constants.length > 0) {
+          analysisHTML += `<li><strong>Constantes:</strong> ${constants.join(
+            ", "
+          )}</li>`;
+        }
+
+        analysisHTML += `<li><strong>Términos:</strong> ${terms.length}</li>`;
+        analysisHTML += "</ul></div>";
+
+        analysisDiv.innerHTML = analysisHTML;
+      }
+    </script>
+  </body>
+  <script>
+    // Detect module query param and update the page title/header
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const module = params.get("module");
+      if (!module) return;
+      // module is like 'g7-matematicas' -- make a readable label
+      const parts = module.split("-");
+      // remove leading 'g7' or similar
+      if (parts.length >= 2) {
+        const grade = parts[0];
+        const subject = parts.slice(1).join(" ");
+        const headerTitle = document.querySelector(".header h1");
+        if (headerTitle) {
+          headerTitle.innerHTML = `<i class="fas fa-square-root-alt"></i> Estudiar Temas: ${subject.replace(
+            /\b\w/g,
+            (c) => c.toUpperCase()
+          )}`;
+        }
+        document.title = `Estudiar - ${subject}`;
+      }
+    })();
+  </script>
+</html>
