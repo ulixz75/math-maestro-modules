@@ -116,7 +116,7 @@ const contentData = {
             {
                 title: "1. Fracciones y Decimales",
                 icon: "fas fa-divide",
-                theory: "Un <strong>número racional</strong> es cualquier número que puede expresarse como una fracción <strong>a/b</strong>, donde 'a' (numerador) y 'b' (denominador) son enteros, y 'b' no es cero. Esto incluye a los números enteros, las fracciones y los decimales (exactos y periódicos).<br><br><i>[Visual: Diagrama que muestra cómo los números naturales están dentro de los enteros, y los enteros dentro de los racionales.]</i>",
+                theory: "Un <strong>número racional</strong> es cualquier número que puede expresarse como una fracción <strong>a/b</strong>, donde 'a' (numerador) y 'b' (denominador) son enteros, y 'b' no es cero. Esto incluye a los números enteros, las fracciones y los decimales (exactos y periódicos).<br><br><div class='number-set-diagram'><div class='set-q'>Q (Racionales)<div class='set-z'>Z (Enteros)<div class='set-n'>N (Naturales)</div></div></div></div>",
                 examples: [
                     {
                         problem: "Convierte la fracción 3/4 a decimal.",
@@ -143,12 +143,49 @@ const contentData = {
                 theory: "Las operaciones con fracciones requieren reglas específicas:<br><strong>Suma/Resta:</strong> Si tienen el mismo denominador, se suman/restan los numeradores. Si no, se busca un denominador común.<br><strong>Multiplicación:</strong> Se multiplican los numeradores entre sí y los denominadores entre sí (a/b × c/d = ac/bd).<br><strong>División:</strong> Se multiplica la primera fracción por el inverso de la segunda (a/b ÷ c/d = a/b × d/c).",
                 examples: [
                     {
-                        problem: "Calcula (1/2) + (3/4).",
+                        problem: "Suma de fracciones con <strong>igual</strong> denominador: (3/5) + (1/5).",
+                        solution: "4/5",
+                        steps: [
+                            { step: 1, explanation: "Como los denominadores son iguales (5), se mantiene el mismo denominador." },
+                            { step: 2, explanation: "Se suman los numeradores: 3 + 1 = 4." },
+                            { step: 3, explanation: "El resultado es 4/5." },
+                        ]
+                    },
+                    {
+                        problem: "Resta de fracciones con <strong>igual</strong> denominador: (7/8) - (3/8).",
+                        solution: "1/2",
+                        steps: [
+                            { step: 1, explanation: "Como los denominadores son iguales (8), se mantiene el mismo denominador." },
+                            { step: 2, explanation: "Se restan los numeradores: 7 - 3 = 4." },
+                            { step: 3, explanation: "El resultado es 4/8. Se simplifica dividiendo ambos por 4, obteniendo 1/2." },
+                        ]
+                    },
+                    {
+                        problem: "Suma de fracciones con <strong>diferente</strong> denominador: (1/2) + (3/4).",
                         solution: "5/4",
                         steps: [
                             { step: 1, explanation: "El mínimo común múltiplo de 2 y 4 es 4. Este será el denominador común." },
                             { step: 2, explanation: "Convierte 1/2 a una fracción con denominador 4: (1×2)/(2×2) = 2/4." },
-                            { step: 3, explanation: "Suma las fracciones: (2/4) + (3/4) = 5/4." },
+                            { step: 3, explanation: "Suma las fracciones con el mismo denominador: (2/4) + (3/4) = 5/4." },
+                        ]
+                    },
+                    {
+                        problem: "Multiplicación de fracciones: (2/3) × (5/7).",
+                        solution: "10/21",
+                        steps: [
+                            { step: 1, explanation: "Se multiplican los numeradores entre sí: 2 × 5 = 10." },
+                            { step: 2, explanation: "Se multiplican los denominadores entre sí: 3 × 7 = 21." },
+                            { step: 3, explanation: "El resultado es 10/21." },
+                        ]
+                    },
+                    {
+                        problem: "División de fracciones: (1/2) ÷ (3/4).",
+                        solution: "2/3",
+                        steps: [
+                            { step: 1, explanation: "La división de fracciones es igual a multiplicar la primera fracción por el inverso de la segunda." },
+                            { step: 2, explanation: "La operación se convierte en: (1/2) × (4/3)." },
+                            { step: 3, explanation: "Multiplica los numeradores (1×4=4) y los denominadores (2×3=6), resultando en 4/6." },
+                            { step: 4, explanation: "Simplifica la fracción dividiendo ambos por 2: 2/3." },
                         ]
                     }
                 ]
