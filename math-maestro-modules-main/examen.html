@@ -3,1164 +3,215 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Exámenes de Práctica - Expresiones Algebraicas</title>
+    <title>Examen de Práctica</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link rel="stylesheet" href="style.css" />
     <style>
       :root {
-        --primary-color: #4ecdc4;
-        --secondary-color: #667eea;
-        --accent-color: #ff6b6b;
-        --success-color: #2ecc71;
-        --warning-color: #f39c12;
-        --error-color: #e74c3c;
-        --text-color: #2c3e50;
-        --bg-light: #f8f9fa;
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+          --primary-color: #4ecdc4;
+          --secondary-color: #667eea;
+          --accent-color: #ff6b6b;
+          --success-color: #2ecc71;
+          --warning-color: #f39c12;
+          --error-color: #e74c3c;
+          --text-color: #2c3e50;
+          --bg-light: #f8f9fa;
+          --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
       }
 
       * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
       }
 
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(
-          135deg,
-          var(--secondary-color) 0%,
-          #764ba2 100%
-        );
-        min-height: 100vh;
-        color: var(--text-color);
-        line-height: 1.6;
-        padding: 20px;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, var(--secondary-color) 0%, #764ba2 100%);
+          min-height: 100vh;
+          color: var(--text-color);
+          line-height: 1.6;
+          padding: 20px;
       }
 
       .app-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        min-height: 90vh;
-        box-shadow: var(--shadow-hover);
-        border-radius: 20px;
-        overflow-x: hidden;
-        position: relative;
+          max-width: 1200px;
+          margin: 0 auto;
+          background: white;
+          min-height: 90vh;
+          box-shadow: var(--shadow-hover);
+          border-radius: 20px;
+          overflow-x: hidden;
+          position: relative;
       }
 
       .header {
-        background: linear-gradient(
-          135deg,
-          var(--accent-color),
-          var(--primary-color)
-        );
-        color: white;
-        text-align: center;
-        padding: 2rem;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        box-shadow: var(--shadow);
+          background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+          color: white;
+          text-align: center;
+          padding: 2rem;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          box-shadow: var(--shadow);
       }
 
       .header h1 {
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        font-weight: 700;
+          font-size: 2.5rem;
+          margin-bottom: 0.5rem;
+          font-weight: 700;
       }
 
       .header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
+          font-size: 1.1rem;
+          opacity: 0.9;
       }
-
-      .progress-container {
-        padding: 1rem 2rem;
-        background: white;
-        border-bottom: 1px solid #eee;
-        position: sticky;
-        top: 140px;
-        z-index: 99;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .progress-bar {
-        width: 100%;
-        height: 8px;
-        background: #e9ecef;
-        border-radius: 4px;
-        overflow: hidden;
-        margin-bottom: 1rem;
-      }
-
-      .progress-fill {
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
-        width: 0%;
-        transition: width 0.5s ease;
-      }
-
-      .progress-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.9rem;
-        color: #666;
-      }
-
-      .exam-timer {
-        background: var(--warning-color);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
       .main-content {
-        display: flex;
-        min-height: calc(100vh - 200px);
+          display: flex;
+          min-height: calc(100vh - 200px);
       }
-
-      .sidebar {
-        width: 280px;
-        background: var(--bg-light);
-        padding: 2rem 1.5rem;
-        border-right: 1px solid #dee2e6;
-        position: sticky;
-        top: 200px;
-        height: fit-content;
-        overflow-y: auto;
-        max-height: calc(100vh - 200px);
-      }
-
-      .sidebar h3 {
-        color: var(--text-color);
-        margin-bottom: 1rem;
-        font-size: 1.1rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .nav-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        margin-bottom: 0.5rem;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #666;
-        border: 2px solid transparent;
-        position: relative;
-        background: white;
-        cursor: pointer;
-      }
-
-      .nav-item.active {
-        background: var(--primary-color);
-        color: white;
-        border-color: var(--secondary-color);
-        font-weight: bold;
-      }
-
-      .nav-item:hover:not(.active) {
-        background: #f0faff;
-        color: var(--primary-color);
-        transform: translateX(3px);
-        transition: all 0.2s ease;
-      }
-
-      .content-area {
-        flex: 1;
-        padding: 2rem;
-        position: relative;
-      }
-
-      .section {
-        display: none;
-        animation: fadeIn 0.5s ease-in;
-      }
-
-      .section.active {
-        display: block;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .section h2 {
-        color: var(--text-color);
-        margin-bottom: 2rem;
-        font-size: 2rem;
-        border-bottom: 3px solid var(--primary-color);
-        padding-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
       .card {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: var(--shadow);
-        border: 1px solid #e9ecef;
-        transition: all 0.3s ease;
+          background: white;
+          border-radius: 12px;
+          padding: 2rem;
+          margin-bottom: 2rem;
+          box-shadow: var(--shadow);
+          border: 1px solid #e9ecef;
+          transition: all 0.3s ease;
       }
-
       .card:hover {
-        box-shadow: var(--shadow-hover);
-        transform: translateY(-2px);
+          box-shadow: var(--shadow-hover);
+          transform: translateY(-2px);
       }
-
       .card.highlight {
-        border-left: 5px solid var(--primary-color);
-        background: linear-gradient(135deg, #f8f9ff, #fff);
+          border-left: 5px solid var(--primary-color);
+          background: linear-gradient(135deg, #f8f9ff, #fff);
       }
-
-      .card.warning {
-        border-left: 5px solid var(--warning-color);
-        background: linear-gradient(135deg, #fffdf7, #fff);
-      }
-
       .card.success {
-        border-left: 5px solid var(--success-color);
-        background: linear-gradient(135deg, #f7fff7, #fff);
+          border-left: 5px solid var(--success-color);
+          background: linear-gradient(135deg, #f7fff7, #fff);
       }
-
-      .exam-container {
-        background: var(--bg-light);
-        border-radius: 12px;
-        padding: 2rem;
-        margin: 2rem 0;
-      }
-
-      .exam-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #dee2e6;
-      }
-
-      .exam-stats {
-        display: flex;
-        gap: 1rem;
-      }
-
-      .exam-stat {
-        background: white;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .stat-value {
-        font-weight: bold;
-        font-size: 1.2rem;
-        color: var(--primary-color);
-      }
-
-      .stat-label {
-        font-size: 0.8rem;
-        color: #666;
-      }
-
-      .question {
-        background: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        border: 2px solid #e9ecef;
-        transition: all 0.3s ease;
-        position: relative;
-      }
-
-      .question-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid #eee;
-      }
-
-      .question-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: var(--text-color);
-      }
-
-      .question-number {
-        background: var(--primary-color);
-        color: white;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-      }
-
-      .multiple-choice {
-        margin: 1.5rem 0;
-      }
-
-      .option {
-        padding: 1rem;
-        margin: 0.5rem 0;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .option:hover {
-        background: #f8f9fa;
-        border-color: var(--primary-color);
-      }
-
-      .option.selected {
-        background: #e3f2fd;
-        border-color: var(--primary-color);
-      }
-
-      .option.correct {
-        background: #d4edda;
-        border-color: var(--success-color);
-      }
-
-      .option.incorrect {
-        background: #f8d7da;
-        border-color: var(--error-color);
-      }
-
-      .btn {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      .btn:hover {
-        background: #45b7aa;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-hover);
-      }
-
-      .btn:active {
-        transform: translateY(0);
-      }
-
-      .btn-secondary {
-        background: #6c757d;
-      }
-
-      .btn-secondary:hover {
-        background: #5a6268;
-      }
-
-      .btn-warning {
-        background: var(--warning-color);
-      }
-
-      .btn-warning:hover {
-        background: #e67e22;
-      }
-
-      .btn-danger {
-        background: var(--error-color);
-      }
-
-      .btn-danger:hover {
-        background: #c0392b;
-      }
-
-      .btn-success {
-        background: var(--success-color);
-      }
-
-      .btn-success:hover {
-        background: #27ae60;
-      }
-
-      .exam-controls {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 2rem;
-      }
-
-      .results-container {
-        text-align: center;
-        padding: 2rem;
-      }
-
-      .score-circle {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background: conic-gradient(
-          var(--success-color) 0% var(--score-percent),
-          #e9ecef var(--score-percent) 100%
-        );
-        margin: 0 auto 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-      }
-
-      .score-inner {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        box-shadow: var(--shadow);
-      }
-
-      .score-value {
-        font-size: 2rem;
-        font-weight: bold;
-        color: var(--text-color);
-      }
-
-      .score-label {
-        font-size: 0.8rem;
-        color: #666;
-      }
-
-      .results-details {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin: 2rem 0;
-      }
-
-      .result-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        text-align: center;
-        border: 1px solid #e9ecef;
-        box-shadow: var(--shadow);
-      }
-
-      .result-number {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: var(--primary-color);
-        display: block;
-      }
-
-      .result-label {
-        font-size: 0.9rem;
-        color: #666;
-        margin-top: 0.5rem;
-      }
-
-      .review-item {
-        background: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        border-left: 4px solid #e9ecef;
-      }
-
-      .review-item.correct {
-        border-left-color: var(--success-color);
-      }
-
-      .review-item.incorrect {
-        border-left-color: var(--error-color);
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-        body {
-          padding: 10px;
-        }
-        .app-container {
+      .visual-example {
+          background: white;
           border-radius: 10px;
-          min-height: calc(100vh - 20px);
-        }
-        .header h1 {
-          font-size: 1.5rem;
-        }
-        .header p {
-          font-size: 0.9rem;
-        }
-        .header {
-          padding: 1.5rem 1rem;
-        }
-        .main-content {
-          flex-direction: column;
-        }
-        .sidebar {
-          width: 100%;
-          position: static;
-          order: 2;
-          padding: 1rem;
-          max-height: none;
-          height: auto;
-          border-right: none;
-          border-top: 1px solid #dee2e6;
-        }
-        .content-area {
-          padding: 1rem;
-          order: 1;
-        }
-        .progress-container {
-          padding: 0.75rem 1rem;
-          position: static;
-        }
-        .exam-info {
-          flex-direction: column;
-          gap: 1rem;
-          align-items: flex-start;
-        }
-        .exam-stats {
-          width: 100%;
-          justify-content: space-between;
-        }
-        .btn {
-          width: 100%;
-          max-width: 220px;
-          margin: 0 auto;
-          padding: 0.75rem;
-          justify-content: center;
-        }
-        .card {
-          padding: 1.25rem;
-          margin-bottom: 1.5rem;
-        }
-        .section h2 {
-          font-size: 1.5rem;
-          margin-bottom: 1.5rem;
-        }
-        .exam-controls {
-          flex-direction: column;
-          gap: 1rem;
-        }
-        .results-details {
-          grid-template-columns: 1fr 1fr;
-        }
+          padding: 2rem;
+          margin: 1.5rem 0;
+          text-align: center;
+          border: 2px dashed var(--primary-color);
       }
-
-      @media (max-width: 480px) {
-        .header h1 {
-          font-size: 1.3rem;
-        }
-        .exam-stats {
-          flex-direction: column;
-        }
-        .results-details {
-          grid-template-columns: 1fr;
-        }
-        .card {
-          padding: 1rem;
-        }
-        .section h2 {
-          font-size: 1.3rem;
-        }
-        .score-circle {
-          width: 120px;
-          height: 120px;
-        }
-        .score-inner {
-          width: 100px;
-          height: 100px;
-        }
+      .btn {
+          background: var(--primary-color);
+          color: white;
+          border: none;
+          padding: 0.75rem 1.5rem;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          text-decoration: none;
       }
     </style>
   </head>
   <body>
     <div class="app-container">
       <div class="header">
-        <h1>
-          <i class="fas fa-file-alt" aria-hidden="true"></i> Exámenes de
-          Práctica: Expresiones Algebraicas
-        </h1>
-        <p>Evalúa tu aprendizaje con exámenes cronometrados</p>
+        <h1><i class="fas fa-file-alt"></i> Examen de Práctica</h1>
+        <p>Evalúa tus conocimientos</p>
       </div>
-
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-info">
-          <span id="progressText">Examen 1 de 3</span>
-          <span class="exam-timer" id="examTimer"
-            ><i class="fas fa-clock"></i>
-            <span id="timerValue">20:00</span></span
-          >
-        </div>
-      </div>
-
       <div class="main-content">
-        <nav class="sidebar" aria-label="Navegación principal">
-          <h3>
-            <i class="fas fa-book" aria-hidden="true"></i> Exámenes Disponibles
-          </h3>
-          <div class="nav-item active" onclick="showSection(1)">
-            <span>Examen 1: Básico</span><span class="status-badge">📝</span>
-          </div>
-          <div class="nav-item" onclick="showSection(2)">
-            <span>Examen 2: Intermedio</span
-            ><span class="status-badge">📝</span>
-          </div>
-          <div class="nav-item" onclick="showSection(3)">
-            <span>Examen 3: Avanzado</span><span class="status-badge">📝</span>
-          </div>
-          <div class="stats-panel" style="margin-top: 2rem">
-            <div class="stat-card">
-              <span class="stat-number" id="totalScore">0</span>
-              <span class="stat-label">Puntuación Total</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" id="examsCompleted">0</span>
-              <span class="stat-label">Exámenes Completados</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" id="averageScore">0%</span>
-              <span class="stat-label">Promedio</span>
-            </div>
-          </div>
-        </nav>
-
-        <main class="content-area" role="main">
-          <!-- Sección 1: Examen Básico -->
-          <section class="section active" id="section1">
-            <h2>
-              <i class="fas fa-pencil-alt" aria-hidden="true"></i> Examen 1:
-              Conceptos Básicos
-            </h2>
-            <div class="card highlight">
-              <h3>Instrucciones del Examen</h3>
-              <p>
-                Este examen evalúa tus conocimientos básicos sobre expresiones
-                algebraicas. Tienes <strong>20 minutos</strong> para
-                completarlo.
-              </p>
-              <ul style="margin-left: 1.5rem; margin-top: 1rem">
-                <li>• 10 preguntas de opción múltiple</li>
-                <li>• Cada pregunta vale 10 puntos</li>
-                <li>
-                  • No puedes cambiar tus respuestas después de enviar el examen
-                </li>
-                <li>
-                  • Tu puntuación se calculará automáticamente al finalizar
-                </li>
-              </ul>
-            </div>
-
-            <div class="exam-container" id="exam1Container">
-              <div class="exam-info">
-                <h3>Preguntas del Examen</h3>
-                <div class="exam-stats">
-                  <div class="exam-stat">
-                    <span class="stat-value" id="currentQuestion">1</span>
-                    <span class="stat-label">de 10</span>
-                  </div>
-                  <div class="exam-stat">
-                    <span class="stat-value" id="answeredQuestions">0</span>
-                    <span class="stat-label">Respondidas</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="question">
-                <div class="question-header">
-                  <span class="question-title"
-                    >Pregunta 1: Variables y Constantes</span
-                  >
-                  <div class="question-number">1</div>
-                </div>
-                <p>
-                  En la expresión algebraica 3x + 2y - 5, ¿cuáles son las
-                  variables?
-                </p>
-                <div class="multiple-choice">
-                  <div class="option" onclick="selectExamOption(this, '1-1')">
-                    <strong>A)</strong> 3, 2 y 5
-                  </div>
-                  <div class="option" onclick="selectExamOption(this, '1-1')">
-                    <strong>B)</strong> 3x, 2y y -5
-                  </div>
-                  <div class="option" onclick="selectExamOption(this, '1-1')">
-                    <strong>C)</strong> x e y
-                  </div>
-                  <div
-                    class="option correct-option"
-                    onclick="selectExamOption(this, '1-1')"
-                  >
-                    <strong>D)</strong> x, y
-                  </div>
-                </div>
-              </div>
-
-              <div class="question">
-                <div class="question-header">
-                  <span class="question-title"
-                    >Pregunta 2: Términos Semejantes</span
-                  >
-                  <div class="question-number">2</div>
-                </div>
-                <p>¿Cuáles de los siguientes términos son semejantes?</p>
-                <div class="multiple-choice">
-                  <div class="option" onclick="selectExamOption(this, '1-2')">
-                    <strong>A)</strong> 3x y 2y
-                  </div>
-                  <div
-                    class="option correct-option"
-                    onclick="selectExamOption(this, '1-2')"
-                  >
-                    <strong>B)</strong> 5x² y -2x²
-                  </div>
-                  <div class="option" onclick="selectExamOption(this, '1-2')">
-                    <strong>C)</strong> 4xy y 3x
-                  </div>
-                  <div class="option" onclick="selectExamOption(this, '1-2')">
-                    <strong>D)</strong> 2y y 3y²
-                  </div>
-                </div>
-              </div>
-
-              <div class="question">
-                <div class="question-header">
-                  <span class="question-title">Pregunta 3: Simplificación</span>
-                  <div class="question-number">3</div>
-                </div>
-                <p>Simplifica la expresión: 2x + 3y - x + 4y</p>
-                <div class="multiple-choice">
-                  <div class="option" onclick="selectExamOption(this, '1-3')">
-                    <strong>A)</strong> x + 7y
-                  </div>
-                  <div
-                    class="option correct-option"
-                    onclick="selectExamOption(this, '1-3')"
-                  >
-                    <strong>B)</strong> x + 7y
-                  </div>
-                  <div class="option" onclick="selectExamOption(this, '1-3')">
-                    <strong>C)</strong> 3x + 7y
-                  </div>
-                  <div class="option" onclick="selectExamOption(this, '1-3')">
-                    <strong>D)</strong> x + y
-                  </div>
-                </div>
-              </div>
-
-              <!-- Más preguntas (4-10) se agregarían aquí -->
-
-              <div class="exam-controls">
-                <button
-                  class="btn btn-secondary"
-                  id="prevQuestion"
-                  onclick="navigateQuestion(-1)"
-                >
-                  <i class="fas fa-arrow-left"></i> Anterior
-                </button>
-                <button
-                  class="btn"
-                  id="nextQuestion"
-                  onclick="navigateQuestion(1)"
-                >
-                  Siguiente <i class="fas fa-arrow-right"></i>
-                </button>
-                <button class="btn btn-success" onclick="finishExam(1)">
-                  Finalizar Examen
-                </button>
-              </div>
-            </div>
-
-            <div
-              class="results-container"
-              id="exam1Results"
-              style="display: none"
-            >
-              <h2><i class="fas fa-medal"></i> Resultados del Examen</h2>
-              <div class="score-circle" id="scoreCircle">
-                <div class="score-inner">
-                  <span class="score-value" id="finalScore">0</span>
-                  <span class="score-label">Puntos</span>
-                </div>
-              </div>
-
-              <div class="results-details">
-                <div class="result-card">
-                  <span class="result-number" id="correctAnswers">0</span>
-                  <span class="result-label">Correctas</span>
-                </div>
-                <div class="result-card">
-                  <span class="result-number" id="incorrectAnswers">0</span>
-                  <span class="result-label">Incorrectas</span>
-                </div>
-                <div class="result-card">
-                  <span class="result-number" id="timeSpent">0:00</span>
-                  <span class="result-label">Tiempo</span>
-                </div>
-                <div class="result-card">
-                  <span class="result-number" id="percentageScore">0%</span>
-                  <span class="result-label">Porcentaje</span>
-                </div>
-              </div>
-
-              <div class="card">
-                <h3>Revisión de Respuestas</h3>
-                <div class="review-item correct">
-                  <p>
-                    <strong>Pregunta 1:</strong> ¿Cuáles son las variables en 3x
-                    + 2y - 5?
-                  </p>
-                  <p>
-                    Tu respuesta: <strong class="correct">D) x, y</strong> ✓
-                  </p>
-                </div>
-                <div class="review-item incorrect">
-                  <p>
-                    <strong>Pregunta 2:</strong> ¿Cuáles términos son
-                    semejantes?
-                  </p>
-                  <p>
-                    Tu respuesta:
-                    <strong class="incorrect">A) 3x y 2y</strong> ✗
-                  </p>
-                  <p>Respuesta correcta: <strong>B) 5x² y -2x²</strong></p>
-                </div>
-                <!-- Más revisiones -->
-              </div>
-
-              <button class="btn" onclick="showSection(2)">
-                Intentar Examen Intermedio
-              </button>
-            </div>
-          </section>
-
-          <!-- Sección 2: Examen Intermedio -->
-          <section class="section" id="section2">
-            <h2>
-              <i class="fas fa-pencil-alt" aria-hidden="true"></i> Examen 2:
-              Nivel Intermedio
-            </h2>
-            <div class="card highlight">
-              <h3>Instrucciones del Examen</h3>
-              <p>
-                Este examen evalúa tus conocimientos intermedios sobre
-                expresiones algebraicas. Tienes <strong>25 minutos</strong> para
-                completarlo.
-              </p>
-              <ul style="margin-left: 1.5rem; margin-top: 1rem">
-                <li>• 12 preguntas de opción múltiple</li>
-                <li>• Cada pregunta vale 10 puntos</li>
-                <li>• Incluye preguntas de aplicación de propiedades</li>
-                <li>
-                  • Tu puntuación se calculará automáticamente al finalizar
-                </li>
-              </ul>
-            </div>
-            <div class="nav-buttons">
-              <button class="btn btn-secondary" onclick="showSection(1)">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
-              </button>
-              <button class="btn" onclick="startExam(2)">
-                Comenzar Examen
-              </button>
-            </div>
-          </section>
-
-          <!-- Sección 3: Examen Avanzado -->
-          <section class="section" id="section3">
-            <h2>
-              <i class="fas fa-pencil-alt" aria-hidden="true"></i> Examen 3:
-              Nivel Avanzado
-            </h2>
-            <div class="card highlight">
-              <h3>Instrucciones del Examen</h3>
-              <p>
-                Este examen evalúa tus conocimientos avanzados sobre expresiones
-                algebraicas. Tienes <strong>30 minutos</strong> para
-                completarlo.
-              </p>
-              <ul style="margin-left: 1.5rem; margin-top: 1rem">
-                <li>• 15 preguntas de opción múltiple</li>
-                <li>• Cada pregunta vale 10 puntos</li>
-                <li>• Incluye problemas complejos de simplificación</li>
-                <li>
-                  • Tu puntuación se calculará automáticamente al finalizar
-                </li>
-              </ul>
-            </div>
-            <div class="nav-buttons">
-              <button class="btn btn-secondary" onclick="showSection(2)">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
-              </button>
-              <button class="btn" onclick="startExam(3)">
-                Comenzar Examen
-              </button>
-            </div>
-          </section>
-        </main>
+        <!-- El contenido se generará dinámicamente aquí -->
       </div>
     </div>
 
     <script>
-      let currentSection = 1;
-      let currentExam = null;
-      let examTimer = null;
-      let timeRemaining = 20 * 60; // 20 minutos en segundos
-      let examAnswers = {};
-      let examStats = JSON.parse(localStorage.getItem("examStats")) || {
-        totalScore: 0,
-        examsCompleted: 0,
-        averageScore: 0,
-      };
+      document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const module = params.get("module");
+        if (!module) {
+          displayError("Módulo no especificado.");
+          return;
+        }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        updateStatsDisplay();
+        const { grade, subject, subjectName } = parseModuleId(module);
+        if (!grade || !subject) {
+          displayError("ID de módulo inválido.");
+          return;
+        }
+
+        updateHeaders(grade, subjectName);
+        renderContent(grade, subject);
       });
 
-      function updateStatsDisplay() {
-        document.getElementById("totalScore").textContent =
-          examStats.totalScore;
-        document.getElementById("examsCompleted").textContent =
-          examStats.examsCompleted;
-        document.getElementById("averageScore").textContent =
-          examStats.examsCompleted > 0
-            ? `${Math.round(examStats.totalScore / examStats.examsCompleted)}%`
-            : "0%";
+      function parseModuleId(module) {
+        const parts = module.match(/^g(\d+)-(.+)$/);
+        if (!parts) return {};
+
+        const grade = `${parts[1]}mo Grado`;
+        const subjectId = parts[2];
+        const subjectName = subjectId
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+        return { grade, subject: subjectId, subjectName };
       }
 
-      function showSection(sectionNum) {
-        if (currentExam && currentExam !== sectionNum) {
-          if (
-            confirm(
-              "Tienes un examen en progreso. ¿Estás seguro de que quieres salir? Se perderá tu progreso."
-            )
-          ) {
-            resetExam();
-          } else {
-            return;
-          }
-        }
+      function updateHeaders(grade, subjectName) {
+        const headerTitle = document.querySelector(".header h1");
+        const pageTitle = document.querySelector("title");
+        const breadcrumb = document.querySelector(".header p");
 
-        document.querySelectorAll(".section").forEach((section) => {
-          section.classList.remove("active");
-        });
-        currentSection = sectionNum;
-        document
-          .getElementById(`section${currentSection}`)
-          .classList.add("active");
-        window.scrollTo(0, 0);
+        const fullTitle = `Examen de Práctica: ${subjectName}`;
+        headerTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${fullTitle}`;
+        pageTitle.textContent = fullTitle;
+        breadcrumb.textContent = `Módulo de examen para ${grade}`;
       }
 
-      function startExam(examNum) {
-        currentExam = examNum;
-        timeRemaining = (examNum === 1 ? 20 : examNum === 2 ? 25 : 30) * 60;
-        examAnswers = {};
-
-        // Configurar el temporizador
-        updateTimerDisplay();
-        examTimer = setInterval(updateTimer, 1000);
-
-        // Mostrar el contenedor del examen
-        document.getElementById(`exam${examNum}Container`).style.display =
-          "block";
-        document.getElementById(`exam${examNum}Results`).style.display = "none";
-
-        // Actualizar UI
-        document.getElementById("currentQuestion").textContent = "1";
-        document.getElementById("answeredQuestions").textContent = "0";
-
-        showSection(examNum);
+      function displayError(message) {
+        const contentArea = document.querySelector(".main-content");
+        contentArea.innerHTML = `
+            <div class="card highlight" style="text-align: center; width: 100%;">
+                <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
+                <p>${message}</p>
+                <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
+            </div>
+        `;
       }
 
-      function updateTimer() {
-        timeRemaining--;
-        if (timeRemaining <= 0) {
-          clearInterval(examTimer);
-          finishExam(currentExam);
-          alert("¡Tiempo agotado! El examen se ha enviado automáticamente.");
-        }
-        updateTimerDisplay();
-      }
-
-      function updateTimerDisplay() {
-        const minutes = Math.floor(timeRemaining / 60);
-        const seconds = timeRemaining % 60;
-        document.getElementById("timerValue").textContent = `${minutes
-          .toString()
-          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-        // Cambiar color cuando quedan 5 minutos o menos
-        const timerElement = document.getElementById("examTimer");
-        if (timeRemaining <= 300) {
-          // 5 minutos
-          timerElement.style.background = "var(--error-color)";
-        } else if (timeRemaining <= 600) {
-          // 10 minutos
-          timerElement.style.background = "var(--warning-color)";
-        } else {
-          timerElement.style.background = "var(--warning-color)";
-        }
-      }
-
-      function selectExamOption(optionElement, questionId) {
-        // Deseleccionar todas las opciones de esta pregunta
-        const options = optionElement.parentElement.querySelectorAll(".option");
-        options.forEach((opt) => {
-          opt.classList.remove("selected");
-        });
-
-        // Seleccionar la opción clickeada
-        optionElement.classList.add("selected");
-
-        // Guardar la respuesta
-        examAnswers[questionId] = optionElement.textContent.trim().charAt(0);
-
-        // Actualizar contador de preguntas respondidas
-        updateAnsweredCount();
-      }
-
-      function updateAnsweredCount() {
-        const answered = Object.keys(examAnswers).length;
-        document.getElementById("answeredQuestions").textContent = answered;
-      }
-
-      function navigateQuestion(direction) {
-        // Implementar navegación entre preguntas
-        alert(
-          "Funcionalidad de navegación entre preguntas se implementará aquí"
-        );
-      }
-
-      function finishExam(examNum) {
-        clearInterval(examTimer);
-
-        // Calcular resultados (simulado)
-        const score = calculateExamScore(examNum);
-        const totalQuestions = examNum === 1 ? 10 : examNum === 2 ? 12 : 15;
-        const correctAnswers = Math.floor(score / 10);
-        const incorrectAnswers = totalQuestions - correctAnswers;
-        const percentage = Math.round((score / (totalQuestions * 10)) * 100);
-
-        // Actualizar estadísticas
-        examStats.totalScore += score;
-        examStats.examsCompleted++;
-        examStats.averageScore = Math.round(
-          examStats.totalScore / examStats.examsCompleted
-        );
-        localStorage.setItem("examStats", JSON.stringify(examStats));
-
-        // Mostrar resultados
-        document.getElementById(`exam${examNum}Container`).style.display =
-          "none";
-        document.getElementById(`exam${examNum}Results`).style.display =
-          "block";
-
-        // Actualizar UI de resultados
-        document.getElementById("finalScore").textContent = score;
-        document.getElementById("correctAnswers").textContent = correctAnswers;
-        document.getElementById("incorrectAnswers").textContent =
-          incorrectAnswers;
-        document.getElementById(
-          "percentageScore"
-        ).textContent = `${percentage}%`;
-
-        // Calcular tiempo empleado
-        const totalTime =
-          (examNum === 1 ? 20 : examNum === 2 ? 25 : 30) * 60 - timeRemaining;
-        const minutes = Math.floor(totalTime / 60);
-        const seconds = totalTime % 60;
-        document.getElementById("timeSpent").textContent = `${minutes}:${seconds
-          .toString()
-          .padStart(2, "0")}`;
-
-        // Actualizar círculo de puntuación
-        document.documentElement.style.setProperty(
-          "--score-percent",
-          `${percentage}%`
-        );
-
-        // Actualizar estadísticas en sidebar
-        updateStatsDisplay();
-
-        currentExam = null;
-      }
-
-      function calculateExamScore(examNum) {
-        // Simular cálculo de puntuación (en una implementación real, se compararían con respuestas correctas)
-        return Math.floor(Math.random() * 41) + 60; // Puntuación aleatoria entre 60-100
-      }
-
-      function resetExam() {
-        clearInterval(examTimer);
-        currentExam = null;
-        timeRemaining = 0;
-        examAnswers = {};
-        document.getElementById("timerValue").textContent = "20:00";
-        document.getElementById("examTimer").style.background =
-          "var(--warning-color)";
+      function renderContent(grade, subject) {
+        const contentArea = document.querySelector(".main-content");
+        contentArea.innerHTML = `
+            <div style="text-align: center; padding: 2rem; width: 100%;">
+                <div class="card success">
+                    <h2><i class="fas fa-check-circle"></i> Módulo Cargado Exitosamente</h2>
+                    <p>
+                        Mostrando examen de práctica para <strong>${subject
+                          .replace(/-/g, " ")
+                          .toUpperCase()}</strong> de <strong>${grade}</strong>.
+                    </p>
+                </div>
+                <div class="card" style="margin-top: 2rem;">
+                     <h3>Contenido del Examen</h3>
+                     <p>Aquí se mostraría un examen interactivo con preguntas de opción múltiple, verdadero/falso, etc.</p>
+                     <div class="visual-example" style="margin-top: 1rem;">
+                        <i class="fas fa-question-circle" style="font-size: 3rem; color: var(--primary-color);"></i>
+                        <p style="margin-top: 1rem;">[Examen de práctica para ${subject
+                          .replace(/-/g, " ")
+                          .toUpperCase()}...]</p>
+                     </div>
+                </div>
+                 <a href="javascript:history.back()" class="btn" style="margin-top: 2rem;">
+                    <i class="fas fa-arrow-left"></i> Volver a la materia
+                 </a>
+            </div>
+        `;
       }
     </script>
   </body>
-  <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const module = params.get("module");
-      if (!module) return;
-      const parts = module.split("-");
-      if (parts.length >= 2) {
-        const subject = parts.slice(1).join(" ");
-        const headerTitle = document.querySelector(".header h1");
-        if (headerTitle) {
-          headerTitle.innerHTML = `<i class="fas fa-file-alt"></i> Exámenes de Práctica: ${subject.replace(
-            /\b\w/g,
-            (c) => c.toUpperCase()
-          )}`;
-        }
-        document.title = `Exámenes - ${subject}`;
-      }
-    })();
-  </script>
 </html>

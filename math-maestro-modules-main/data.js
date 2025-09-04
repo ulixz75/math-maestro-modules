@@ -45,7 +45,7 @@ const subjectTemplate = [
     icon: "flask",
   },
   {
-    id: "Inteligencia Artificial",
+    id: "ia",
     name: "Inteligencia Artificial",
     description: "Prompts,herramientas,aplicaciones y ética de la IA.",
     icon: "robot",
@@ -123,7 +123,7 @@ const generateCurriculum = () => {
     });
 
     return {
-      id: `grade-${grade.id}`,
+      id: grade.id, // Use the numeric ID directly
       name: grade.name,
       displayName: grade.displayName,
       description: grade.description,

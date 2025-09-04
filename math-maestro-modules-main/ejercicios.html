@@ -1083,303 +1083,90 @@
     </div>
 
     <script>
-      let currentSection = 1;
-      const totalSections = 4;
-      let sectionCompletions = new Set(
-        JSON.parse(localStorage.getItem("sectionCompletions")) || []
-      );
-      let score = parseInt(localStorage.getItem("score")) || 0;
-      let exercisesCompleted =
-        parseInt(localStorage.getItem("exercisesCompleted")) || 0;
-      const MAX_SCORE = 100;
-
-      document.addEventListener("DOMContentLoaded", function () {
-        createSectionProgress();
-        updateSidebarStatus();
-        updateSectionProgress();
-        loadProgress();
-      });
-
-      function loadProgress() {
-        sectionCompletions.forEach((sec) => showSection(sec, false));
-        document.getElementById("totalScore").textContent = score;
-        document.getElementById("accuracy").textContent = `${Math.round(
-          (score / MAX_SCORE) * 100
-        )}%`;
-        document.getElementById("exercisesCompleted").textContent =
-          exercisesCompleted;
-      }
-
-      function saveProgress() {
-        localStorage.setItem(
-          "sectionCompletions",
-          JSON.stringify(Array.from(sectionCompletions))
-        );
-        localStorage.setItem("score", score);
-        localStorage.setItem("exercisesCompleted", exercisesCompleted);
-      }
-
-      function createSectionProgress() {
-        const container = document.getElementById("sectionProgress");
-        container.innerHTML = "";
-        for (let i = 1; i <= totalSections; i++) {
-          const dot = document.createElement("div");
-          dot.className = "section-dot";
-          dot.dataset.section = i;
-          dot.onclick = () => showSection(i);
-          container.appendChild(dot);
-        }
-      }
-
-      function updateSectionProgress() {
-        document.querySelectorAll(".section-dot").forEach((dot) => {
-          const sectionNum = parseInt(dot.dataset.section);
-          dot.classList.remove("current", "completed");
-          if (sectionCompletions.has(sectionNum)) {
-            dot.classList.add("completed");
-          }
-          if (sectionNum === currentSection) {
-            dot.classList.add("current");
-          }
-        });
-      }
-
-      function updateSidebarStatus() {
-        const navItems = document.querySelectorAll(".nav-item");
-        const icons = ["🔍", "🧮", "📊", "⚖️"];
-        navItems.forEach((item, index) => {
-          const badge = item.querySelector(".status-badge");
-          item.classList.remove("active");
-          if (index + 1 === currentSection) {
-            item.classList.add("active");
-            badge.textContent = "📍";
-          } else if (sectionCompletions.has(index + 1)) {
-            badge.textContent = "✅";
-          } else {
-            badge.textContent = icons[index];
-          }
-        });
-      }
-
-      function showSection(sectionNum, update = true) {
-        if (sectionNum < 1 || sectionNum > totalSections) return;
-        document
-          .getElementById(`section${currentSection}`)
-          .classList.remove("active");
-        currentSection = sectionNum;
-        document
-          .getElementById(`section${currentSection}`)
-          .classList.add("active");
-        sectionCompletions.add(currentSection);
-        const progress = (sectionCompletions.size / totalSections) * 100;
-        document.getElementById("progressFill").style.width = `${progress}%`;
-        document.getElementById(
-          "progressText"
-        ).textContent = `Sección ${currentSection} de ${totalSections}`;
-        document.getElementById("completionRate").textContent = `${Math.round(
-          progress
-        )}% completado`;
-        updateSidebarStatus();
-        updateSectionProgress();
-        if (update) saveProgress();
-        window.scrollTo(0, 0);
-      }
-
-      function selectOption(optionElement, questionId) {
-        // Deseleccionar todas las opciones de esta pregunta
-        const options = optionElement.parentElement.querySelectorAll(".option");
-        options.forEach((opt) => {
-          opt.classList.remove("selected");
-        });
-
-        // Seleccionar la opción clickeada
-        optionElement.classList.add("selected");
-
-        // Guardar la selección
-        optionElement.dataset.selected = true;
-      }
-
-      function checkMultipleChoice(questionNum, correctAnswer) {
-        const options = document
-          .querySelectorAll(`#feedback${questionNum}`)
-          .closest(".exercise")
-          .querySelectorAll(".option");
-        let selectedOption = null;
-
-        options.forEach((option) => {
-          if (option.classList.contains("selected")) {
-            selectedOption = option;
-          }
-          option.classList.remove("correct", "incorrect");
-        });
-
-        const feedback = document.getElementById(`feedback${questionNum}`);
-        const exercise = document
-          .getElementById(`feedback${questionNum}`)
-          .closest(".exercise");
-
-        if (!selectedOption) {
-          showFeedback(
-            feedback,
-            `<i class="fas fa-exclamation-circle"></i> Por favor selecciona una opción.`,
-            "incorrect"
-          );
+      // --- DYNAMIC CONTENT LOADER ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const module = params.get("module"); // e.g., "g7-matematicas"
+        if (!module) {
+          displayError("Módulo no especificado.");
           return;
         }
 
-        const userAnswer = selectedOption.textContent.trim().charAt(0);
-        let explanation = "";
-
-        if (questionNum === "1a")
-          explanation =
-            "Las variables son x e y (letras), las constantes son 3, 2 y -5 (números).";
-        if (questionNum === "1b")
-          explanation =
-            "3x y -5x son semejantes porque ambos tienen la variable x con exponente 1.";
-        if (questionNum === "4b")
-          explanation =
-            "La propiedad asociativa establece que la forma de agrupar los términos no altera el resultado.";
-
-        if (userAnswer === correctAnswer) {
-          showFeedback(
-            feedback,
-            `<i class="fas fa-check-circle"></i> ¡Correcto! ${explanation}`,
-            "correct"
-          );
-          selectedOption.classList.add("correct");
-          exercise.classList.add("completed");
-          score = Math.min(MAX_SCORE, score + 10);
-          exercisesCompleted++;
-          updateScoreDisplay();
-          saveProgress();
-        } else {
-          showFeedback(
-            feedback,
-            `<i class="fas fa-times-circle"></i> Incorrecto. ${explanation}`,
-            "incorrect"
-          );
-          selectedOption.classList.add("incorrect");
-
-          // Marcar la opción correcta
-          options.forEach((option) => {
-            if (option.textContent.trim().charAt(0) === correctAnswer) {
-              option.classList.add("correct");
-            }
-          });
+        const { grade, subject, subjectName } = parseModuleId(module);
+        if (!grade || !subject) {
+          displayError("ID de módulo inválido.");
+          return;
         }
+
+        updateHeaders(grade, subjectName);
+        renderContent(grade, subject);
+      });
+
+      function parseModuleId(module) {
+        const parts = module.match(/^g(\d+)-(.+)$/);
+        if (!parts) return {};
+
+        const grade = `${parts[1]}mo Grado`;
+        const subjectId = parts[2];
+        const subjectName = subjectId
+          .replace(/-/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase());
+        return { grade, subject: subjectId, subjectName };
       }
 
-      function checkAnswer(questionNum, correctAnswer) {
-        const userAnswer = parseInt(
-          document.getElementById(`answer${questionNum}`).value
-        );
-        const feedback = document.getElementById(`feedback${questionNum}`);
-        const exercise = document
-          .getElementById(`answer${questionNum}`)
-          .closest(".exercise");
-        let explanation = "";
+      function updateHeaders(grade, subjectName) {
+        const headerTitle = document.querySelector(".header h1");
+        const pageTitle = document.querySelector("title");
+        const breadcrumb = document.querySelector(".header p");
 
-        if (questionNum === "3a") explanation = "3(2) + 4 = 6 + 4 = 10";
-        if (questionNum === "3b")
-          explanation = "2(3) + 3(2) - 1 = 6 + 6 - 1 = 11";
-
-        if (userAnswer === correctAnswer) {
-          showFeedback(
-            feedback,
-            `<i class="fas fa-check-circle"></i> ¡Correcto! ${explanation}`,
-            "correct"
-          );
-          if (exercise) exercise.classList.add("completed");
-          score = Math.min(MAX_SCORE, score + 10);
-          exercisesCompleted++;
-          updateScoreDisplay();
-          saveProgress();
-        } else {
-          showFeedback(
-            feedback,
-            `<i class="fas fa-times-circle"></i> Incorrecto. ${explanation}`,
-            "incorrect"
-          );
-        }
+        const fullTitle = `Ejercicios de ${subjectName}`;
+        headerTitle.innerHTML = `<i class="fas fa-pen-to-square"></i> ${fullTitle}`;
+        pageTitle.textContent = fullTitle;
+        breadcrumb.textContent = `Módulo de práctica para ${grade}`;
       }
 
-      function checkAlgebraAnswer(questionNum, correctAnswer) {
-        const userAnswer = document
-          .getElementById(`answer${questionNum}`)
-          .value.replace(/\s/g, "");
-        const feedback = document.getElementById(`feedback${questionNum}`);
-        const exercise = document
-          .getElementById(`answer${questionNum}`)
-          .closest(".exercise");
-        let explanation = "";
-
-        if (questionNum === "2a")
-          explanation = "3x + 2y - x + 4y = (3x - x) + (2y + 4y) = 2x + 6y";
-        if (questionNum === "2b")
-          explanation =
-            "2x² + 3xy - x² + 2xy - 5y = (2x² - x²) + (3xy + 2xy) - 5y = x² + 5xy - 5y";
-        if (questionNum === "4a")
-          explanation = "2(3x - 4) = 2*3x + 2*(-4) = 6x - 8";
-
-        if (userAnswer === correctAnswer) {
-          showFeedback(
-            feedback,
-            `<i class="fas fa-check-circle"></i> ¡Correcto! ${explanation}`,
-            "correct"
-          );
-          if (exercise) exercise.classList.add("completed");
-          score = Math.min(MAX_SCORE, score + 10);
-          exercisesCompleted++;
-          updateScoreDisplay();
-          saveProgress();
-        } else {
-          showFeedback(
-            feedback,
-            `<i class="fas fa-times-circle"></i> Incorrecto. ${explanation}`,
-            "incorrect"
-          );
-        }
+      function displayError(message) {
+        const contentArea = document.querySelector(".main-content");
+        contentArea.innerHTML = `
+                <div class="card highlight" style="text-align: center; width: 100%;">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
+                    <p>${message}</p>
+                    <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
+                </div>
+            `;
       }
 
-      function showFeedback(feedbackElement, message, type) {
-        feedbackElement.className = `feedback ${type} show`;
-        feedbackElement.innerHTML = message;
-      }
+      function renderContent(grade, subject) {
+        const contentArea = document.querySelector(".main-content");
 
-      function updateScoreDisplay() {
-        document.getElementById("totalScore").textContent = score;
-        document.getElementById("accuracy").textContent = `${Math.round(
-          (score / MAX_SCORE) * 100
-        )}%`;
-        document.getElementById("exercisesCompleted").textContent =
-          exercisesCompleted;
-      }
-
-      function showHint(hintNum) {
-        const hint = document.getElementById(`hint${hintNum}`);
-        if (hint) {
-          hint.style.display = "block";
-        }
+        // For this example, we'll just show a placeholder.
+        // In a real application, you would fetch and render specific exercises.
+        contentArea.innerHTML = `
+            <div style="text-align: center; padding: 2rem; width: 100%;">
+                <div class="card success">
+                    <h2><i class="fas fa-check-circle"></i> Módulo Cargado Exitosamente</h2>
+                    <p>
+                        Mostrando ejercicios para <strong>${subject
+                          .replace(/-/g, " ")
+                          .toUpperCase()}</strong> de <strong>${grade}</strong>.
+                    </p>
+                </div>
+                <div class="card" style="margin-top: 2rem;">
+                     <h3>Contenido de Ejercicios</h3>
+                     <p>Aquí se mostraría una lista de ejercicios interactivos específicos para la materia y el grado seleccionados.</p>
+                     <div class="visual-example" style="margin-top: 1rem;">
+                        <i class="fas fa-tasks" style="font-size: 3rem; color: var(--primary-color);"></i>
+                        <p style="margin-top: 1rem;">[Ejercicios de práctica para ${subject
+                          .replace(/-/g, " ")
+                          .toUpperCase()}...]</p>
+                     </div>
+                </div>
+                 <a href="javascript:history.back()" class="btn" style="margin-top: 2rem;">
+                    <i class="fas fa-arrow-left"></i> Volver a la materia
+                 </a>
+            </div>
+        `;
       }
     </script>
   </body>
-  <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const module = params.get("module");
-      if (!module) return;
-      const parts = module.split("-");
-      if (parts.length >= 2) {
-        const subject = parts.slice(1).join(" ");
-        const headerTitle = document.querySelector(".header h1");
-        if (headerTitle) {
-          headerTitle.innerHTML = `<i class="fas fa-pen-to-square"></i> Ejercicios de Práctica: ${subject.replace(
-            /\b\w/g,
-            (c) => c.toUpperCase()
-          )}`;
-        }
-        document.title = `Ejercicios - ${subject}`;
-      }
-    })();
-  </script>
 </html>
