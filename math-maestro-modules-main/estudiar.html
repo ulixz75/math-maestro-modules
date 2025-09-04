@@ -66,6 +66,7 @@
         padding: 1rem 1.5rem;
         font-size: 1.5rem;
         display: flex;
+        justify-content: space-between;
         align-items: center;
         gap: 1rem;
       }
@@ -81,6 +82,7 @@
         padding: 1.5rem;
         border-left: 5px solid var(--secondary-color);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
       }
       .lesson-card:hover {
         transform: translateY(-5px);
@@ -90,6 +92,9 @@
         margin: 0 0 0.5rem;
         color: var(--primary-color);
         font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
       }
       .error-card,
       .not-found-card {
@@ -115,10 +120,166 @@
       .btn:hover {
         background: #2980b9;
       }
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border-radius: 15px;
+        width: 80%;
+        max-width: 800px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        animation: slide-down 0.5s ease-out;
+      }
+      @keyframes slide-down {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .modal-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--primary-color);
+        color: white;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+      }
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      .close-button {
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .close-button:hover {
+        color: #f1f1f1;
+      }
+      .modal-body {
+        padding: 1.5rem;
+      }
+      .modal-body h3 {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 0.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .example {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      .example-solution {
+        background: #eaf7e9;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: bold;
+        color: #2b7d2d;
+        margin: 0.5rem 0;
+      }
+      .step {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 0.5rem;
+      }
+      .step-number {
+        background-color: var(--secondary-color);
+        color: white;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 10px;
+        flex-shrink: 0;
+      }
+      .video-btn {
+        background-color: #c4302b;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+      }
+      .video-btn:hover {
+        background-color: #a02622;
+      }
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .back-to-portal-btn {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        z-index: 1001;
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        font-size: 1.5rem;
+        padding: 0;
+        margin: 0;
+      }
+      .back-to-portal-btn .fas {
+        margin-right: 0;
+      }
+      .back-to-portal-btn span {
+        display: none;
+      }
+      @media (max-width: 768px) {
+        .back-to-portal-btn {
+            height: 50px;
+            width: 50px;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="app-container">
+      <a href="index.html" class="btn back-to-portal-btn" title="Volver al Portal"><i class="fas fa-arrow-left"></i><span>Volver al Portal</span></a>
       <header class="header">
         <h1><i class="fas fa-book-open"></i> Estudiar Temas</h1>
         <p>Material de estudio para la materia</p>
@@ -126,6 +287,17 @@
       <main class="main-content" id="main-content">
         <!-- El contenido se generará dinámicamente aquí -->
       </main>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="lesson-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title"></h2>
+          <span class="close-button">&times;</span>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
     </div>
 
     <script src="content.js"></script>
@@ -146,6 +318,7 @@
 
         updateHeaders(grade, subjectName);
         renderContent(module);
+        setupModal();
       });
 
       function parseModuleId(module) {
@@ -198,16 +371,26 @@
           html += `
             <section class="unit-section">
               <header class="unit-header">
-                <i class="fas fa-layer-group"></i>
-                <h3>${unit.title}</h3>
+                <div><i class="fas fa-layer-group"></i> <h3>${
+                  unit.title
+                }</h3></div>
+                ${
+                  unit.videoUrl
+                    ? `<button class="btn video-btn" data-video-url="${unit.videoUrl}"><i class="fab fa-youtube"></i> Ver Video</button>`
+                    : ""
+                }
               </header>
               <div class="lesson-grid">
                 ${unit.lessons
                   .map(
-                    (lesson) => `
-                  <div class="lesson-card">
-                    <h4>${lesson.title}</h4>
-                    <p>${lesson.content}</p>
+                    (lesson, index) => `
+                  <div class="lesson-card" data-lesson-index="${index}" data-unit-title="${
+                      unit.title
+                    }">
+                    <h4><i class="${lesson.icon || 'fas fa-book'}"></i>${
+                      lesson.title
+                    }</h4>
+                    <p>${getSummary(lesson)}</p>
                   </div>`
                   )
                   .join("")}
@@ -215,6 +398,118 @@
             </section>`;
         });
         contentArea.innerHTML = html;
+
+        // Add event listeners to the new cards
+        document.querySelectorAll(".lesson-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            const unitTitle = card.dataset.unitTitle;
+            const lessonIndex = parseInt(card.dataset.lessonIndex);
+            const unit = data.units.find((u) => u.title === unitTitle);
+            const lesson = unit.lessons[lessonIndex];
+            openLessonModal(lesson);
+          });
+        });
+
+        document.querySelectorAll(".video-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                openVideoModal(button.dataset.videoUrl);
+            });
+        });
+      }
+
+      function setupModal() {
+        const modal = document.getElementById("lesson-modal");
+        const closeButton = document.querySelector(".close-button");
+
+        const closeModal = () => {
+            modal.style.display = "none";
+            // Stop video when closing modal
+            const iframe = modal.querySelector("iframe");
+            if (iframe) {
+                iframe.src = iframe.src;
+            }
+        };
+
+        closeButton.onclick = closeModal;
+        window.onclick = (event) => {
+          if (event.target == modal) {
+            closeModal();
+          }
+        };
+      }
+
+      function openLessonModal(lesson) {
+        const modal = document.getElementById("lesson-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
+
+        if (!lesson.theory) {
+          // Handle lessons with only simple content
+          modalTitle.innerHTML = `<i class="${
+            lesson.icon || 'fas fa-book'
+          }"></i> ${lesson.title}`;
+          modalBody.innerHTML = `<p>${lesson.content}</p>`;
+          modal.style.display = "flex";
+          return;
+        }
+
+        modalTitle.innerHTML = `<i class="${lesson.icon || 'fas fa-book'}"></i> ${
+          lesson.title
+        }`;
+        let bodyHtml = `
+            <h3>Teoría</h3>
+            <p>${lesson.theory}</p>`;
+
+        if (lesson.examples && lesson.examples.length > 0) {
+          bodyHtml += `<h3>Ejemplos</h3>`;
+          lesson.examples.forEach((example) => {
+            bodyHtml += `
+                <div class="example">
+                    <strong>Problema:</strong> ${example.problem}
+                    <div class="example-solution">
+                        <strong>Solución:</strong> ${example.solution}
+                    </div>
+                    <strong>Pasos:</strong>
+                    ${example.steps
+                      .map(
+                        (step) => `
+                        <div class="step">
+                            <span class="step-number">${step.step}</span>
+                            <p>${step.explanation}</p>
+                        </div>`
+                      )
+                      .join("")}
+                </div>`;
+          });
+        }
+
+        modalBody.innerHTML = bodyHtml;
+        modal.style.display = "flex";
+      }
+
+      function openVideoModal(videoUrl) {
+        const modal = document.getElementById("lesson-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
+
+        modalTitle.innerHTML = `<i class="fab fa-youtube"></i> Video Tutorial`;
+        modalBody.innerHTML = `
+            <div class="video-container">
+                <iframe src="${videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        `;
+        modal.style.display = "flex";
+      }
+
+      function getSummary(lesson) {
+        if (!lesson.theory) {
+          return lesson.content || "";
+        }
+        // Strip HTML tags for a clean summary
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = lesson.theory;
+        const text = tempDiv.textContent || tempDiv.innerText || "";
+        return text.substring(0, 100) + "...";
       }
     </script>
   </body>
