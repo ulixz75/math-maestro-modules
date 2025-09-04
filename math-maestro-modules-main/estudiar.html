@@ -8,129 +8,127 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="style.css" />
     <style>
       :root {
-          --primary-color: #4ecdc4;
-          --secondary-color: #667eea;
-          --accent-color: #ff6b6b;
-          --success-color: #2ecc71;
-          --warning-color: #f39c12;
-          --error-color: #e74c3c;
-          --text-color: #2c3e50;
-          --bg-light: #f8f9fa;
-          --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --background-color: #ecf0f1;
+        --text-color: #34495e;
+        --card-bg: #ffffff;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       }
-
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-      }
-
       body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          background: linear-gradient(135deg, var(--secondary-color) 0%, #764ba2 100%);
-          min-height: 100vh;
-          color: var(--text-color);
-          line-height: 1.6;
-          padding: 20px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
       }
-
       .app-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          background: white;
-          min-height: 90vh;
-          box-shadow: var(--shadow-hover);
-          border-radius: 20px;
-          overflow-x: hidden;
-          position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
       }
-
       .header {
-          background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-          color: white;
-          text-align: center;
-          padding: 2rem;
-          position: sticky;
-          top: 0;
-          z-index: 100;
-          box-shadow: var(--shadow);
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
       }
-
       .header h1 {
-          font-size: 2.5rem;
-          margin-bottom: 0.5rem;
-          font-weight: 700;
+        margin: 0;
+        font-size: 2.5rem;
       }
-
       .header p {
-          font-size: 1.1rem;
-          opacity: 0.9;
+        margin: 0.5rem 0 0;
+        opacity: 0.9;
       }
       .main-content {
-          display: flex;
-          min-height: calc(100vh - 200px);
+        padding: 1rem;
       }
-      .card {
-          background: white;
-          border-radius: 12px;
-          padding: 2rem;
-          margin-bottom: 2rem;
-          box-shadow: var(--shadow);
-          border: 1px solid #e9ecef;
-          transition: all 0.3s ease;
+      .unit-section {
+        background: var(--card-bg);
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        overflow: hidden;
       }
-      .card:hover {
-          box-shadow: var(--shadow-hover);
-          transform: translateY(-2px);
+      .unit-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 1rem 1.5rem;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
       }
-      .card.highlight {
-          border-left: 5px solid var(--primary-color);
-          background: linear-gradient(135deg, #f8f9ff, #fff);
+      .lesson-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        padding: 1.5rem;
       }
-      .card.success {
-          border-left: 5px solid var(--success-color);
-          background: linear-gradient(135deg, #f7fff7, #fff);
+      .lesson-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        border-left: 5px solid var(--secondary-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
-      .visual-example {
-          background: white;
-          border-radius: 10px;
-          padding: 2rem;
-          margin: 1.5rem 0;
-          text-align: center;
-          border: 2px dashed var(--primary-color);
+      .lesson-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+      .lesson-card h4 {
+        margin: 0 0 0.5rem;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+      }
+      .error-card,
+      .not-found-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: var(--shadow);
       }
       .btn {
-          background: var(--primary-color);
-          color: white;
-          border: none;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 1rem;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          text-decoration: none;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+        transition: background-color 0.3s;
+      }
+      .btn:hover {
+        background: #2980b9;
       }
     </style>
   </head>
   <body>
     <div class="app-container">
-      <div class="header">
+      <header class="header">
         <h1><i class="fas fa-book-open"></i> Estudiar Temas</h1>
         <p>Material de estudio para la materia</p>
-      </div>
-      <div class="main-content">
+      </header>
+      <main class="main-content" id="main-content">
         <!-- El contenido se generará dinámicamente aquí -->
-      </div>
+      </main>
     </div>
 
+    <script src="content.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
@@ -140,33 +138,31 @@
           return;
         }
 
-        const { grade, subject, subjectName } = parseModuleId(module);
-        if (!grade || !subject) {
+        const { grade, subjectName } = parseModuleId(module);
+        if (!grade || !subjectName) {
           displayError("ID de módulo inválido.");
           return;
         }
 
         updateHeaders(grade, subjectName);
-        renderContent(grade, subject);
+        renderContent(module);
       });
 
       function parseModuleId(module) {
         const parts = module.match(/^g(\d+)-(.+)$/);
         if (!parts) return {};
-
         const grade = `${parts[1]}mo Grado`;
         const subjectId = parts[2];
-        const subjectName = subjectId
-          .replace(/-/g, " ")
-          .replace(/\b\w/g, (c) => c.toUpperCase());
-        return { grade, subject: subjectId, subjectName };
+        const subjectName =
+          subjectId.charAt(0).toUpperCase() +
+          subjectId.slice(1).replace(/-/g, " ");
+        return { grade, subjectName };
       }
 
       function updateHeaders(grade, subjectName) {
         const headerTitle = document.querySelector(".header h1");
         const pageTitle = document.querySelector("title");
         const breadcrumb = document.querySelector(".header p");
-
         const fullTitle = `Temas de Estudio: ${subjectName}`;
         headerTitle.innerHTML = `<i class="fas fa-book-open"></i> ${fullTitle}`;
         pageTitle.textContent = fullTitle;
@@ -174,43 +170,51 @@
       }
 
       function displayError(message) {
-        const contentArea = document.querySelector(".main-content");
+        const contentArea = document.getElementById("main-content");
         contentArea.innerHTML = `
-            <div class="card highlight" style="text-align: center; width: 100%;">
+            <div class="error-card">
                 <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
                 <p>${message}</p>
-                <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
-            </div>
-        `;
+                <a href="index.html" class="btn">Volver al inicio</a>
+            </div>`;
       }
 
-      function renderContent(grade, subject) {
-        const contentArea = document.querySelector(".main-content");
-        contentArea.innerHTML = `
-            <div style="text-align: center; padding: 2rem; width: 100%;">
-                <div class="card success">
-                    <h2><i class="fas fa-check-circle"></i> Módulo Cargado Exitosamente</h2>
-                    <p>
-                        Mostrando material de estudio para <strong>${subject
-                          .replace(/-/g, " ")
-                          .toUpperCase()}</strong> de <strong>${grade}</strong>.
-                    </p>
-                </div>
-                <div class="card" style="margin-top: 2rem;">
-                     <h3>Contenido de Estudio</h3>
-                     <p>Aquí se mostraría el material de estudio, como textos, videos y diagramas para la materia y el grado seleccionados.</p>
-                     <div class="visual-example" style="margin-top: 1rem;">
-                        <i class="fas fa-book" style="font-size: 3rem; color: var(--primary-color);"></i>
-                        <p style="margin-top: 1rem;">[Material de estudio para ${subject
-                          .replace(/-/g, " ")
-                          .toUpperCase()}...]</p>
-                     </div>
-                </div>
-                 <a href="javascript:history.back()" class="btn" style="margin-top: 2rem;">
-                    <i class="fas fa-arrow-left"></i> Volver a la materia
-                 </a>
-            </div>
-        `;
+      function renderContent(module) {
+        const contentArea = document.getElementById("main-content");
+        const data = contentData[module];
+
+        if (!data) {
+          contentArea.innerHTML = `
+            <div class="not-found-card">
+                <h2><i class="fas fa-search"></i> Contenido no encontrado</h2>
+                <p>Aún no hemos agregado el material de estudio para este módulo. ¡Vuelve pronto!</p>
+                <a href="javascript:history.back()" class="btn">Volver</a>
+            </div>`;
+          return;
+        }
+
+        let html = "";
+        data.units.forEach((unit) => {
+          html += `
+            <section class="unit-section">
+              <header class="unit-header">
+                <i class="fas fa-layer-group"></i>
+                <h3>${unit.title}</h3>
+              </header>
+              <div class="lesson-grid">
+                ${unit.lessons
+                  .map(
+                    (lesson) => `
+                  <div class="lesson-card">
+                    <h4>${lesson.title}</h4>
+                    <p>${lesson.content}</p>
+                  </div>`
+                  )
+                  .join("")}
+              </div>
+            </section>`;
+        });
+        contentArea.innerHTML = html;
       }
     </script>
   </body>
