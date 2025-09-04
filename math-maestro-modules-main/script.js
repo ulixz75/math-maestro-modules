@@ -35,9 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const header = document.createElement("div");
     header.className = "header";
 
+    // Improved back button with clearer text
     const backButton = document.createElement("button");
     backButton.className = "back-button";
-    const backText = backView === "grades" ? "Grados" : "Materias";
+    let backText = "Grados"; // Default
+    if (backView === "subjects") {
+      backText = `Materias de ${selectedGrade.name}`;
+    }
     backButton.innerHTML = `<i class="fas fa-arrow-left"></i> Volver a ${backText}`;
     backButton.addEventListener("click", () =>
       navigateTo(backView, selectedGrade?.id)
@@ -55,9 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return header;
   };
 
-  const createCard = (title, description, icon, onClick, gradeClass = "") => {
+  const createCard = (title, description, icon, onClick) => {
     const card = document.createElement("div");
-    card.className = `card ${gradeClass}`;
+    card.className = "card";
     card.innerHTML = `
             <div class="card-icon">
                 <i class="fas fa-${icon}"></i>
@@ -85,8 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
         grade.displayName,
         grade.description,
         grade.icon,
-        () => navigateTo("subjects", grade.id),
-        `grade-${grade.id}`
+        () => navigateTo("subjects", grade.id)
       );
       grid.appendChild(card);
     });
@@ -123,26 +126,53 @@ document.addEventListener("DOMContentLoaded", () => {
     const detailContainer = document.createElement("div");
     detailContainer.className = "module-detail";
 
-    detailContainer.innerHTML = `
-            <p>${selectedSubject.description}</p>
-            <div class="action-buttons">
-                <div class="action-button study" onclick="window.location.href='${selectedSubject.studyUrl}'">
-                    <i class="fas fa-book-open"></i>
-                    <h4>Estudiar Temas</h4>
-                    <span>Revisa el material de estudio</span>
-                </div>
-                <div class="action-button" onclick="window.location.href='${selectedSubject.exerciseUrl}'">
-                    <i class="fas fa-pen-to-square"></i>
-                    <h4>Ejercicios de Práctica</h4>
-                    <span>Pon a prueba tus conocimientos</span>
-                </div>
-                <div class="action-button exam" onclick="window.location.href='${selectedSubject.examUrl}'">
-                    <i class="fas fa-file-alt"></i>
-                    <h4>Exámenes de Práctica</h4>
-                    <span>Evalúa tu aprendizaje</span>
-                </div>
-            </div>
-        `;
+    // Programmatically create action buttons for better event handling
+    const description = document.createElement("p");
+    description.textContent = selectedSubject.description;
+    detailContainer.appendChild(description);
+
+    const actionsContainer = document.createElement("div");
+    actionsContainer.className = "action-buttons";
+
+    const actions = [
+      {
+        title: "Estudiar Temas",
+        subtitle: "Revisa el material de estudio",
+        icon: "book-open",
+        url: selectedSubject.studyUrl,
+        className: "study",
+      },
+      {
+        title: "Ejercicios de Práctica",
+        subtitle: "Pon a prueba tus conocimientos",
+        icon: "pen-to-square",
+        url: selectedSubject.exerciseUrl,
+        className: "exercise",
+      },
+      {
+        title: "Exámenes de Práctica",
+        subtitle: "Evalúa tu aprendizaje",
+        icon: "file-alt",
+        url: selectedSubject.examUrl,
+        className: "exam",
+      },
+    ];
+
+    actions.forEach((action) => {
+      const button = document.createElement("div");
+      button.className = `action-button ${action.className}`;
+      button.innerHTML = `
+              <i class="fas fa-${action.icon}"></i>
+              <h4>${action.title}</h4>
+              <span>${action.subtitle}</span>
+          `;
+      button.addEventListener("click", () => {
+        window.location.href = action.url;
+      });
+      actionsContainer.appendChild(button);
+    });
+
+    detailContainer.appendChild(actionsContainer);
     appContainer.appendChild(header);
     appContainer.appendChild(detailContainer);
   };
