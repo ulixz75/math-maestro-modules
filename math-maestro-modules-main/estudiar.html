@@ -81,6 +81,7 @@
         padding: 1.5rem;
         border-left: 5px solid var(--secondary-color);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
       }
       .lesson-card:hover {
         transform: translateY(-5px);
@@ -90,6 +91,9 @@
         margin: 0 0 0.5rem;
         color: var(--primary-color);
         font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
       }
       .error-card,
       .not-found-card {
@@ -115,6 +119,107 @@
       .btn:hover {
         background: #2980b9;
       }
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border-radius: 15px;
+        width: 80%;
+        max-width: 800px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        animation: slide-down 0.5s ease-out;
+      }
+      @keyframes slide-down {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .modal-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--primary-color);
+        color: white;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+      }
+      .modal-header h2 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      .close-button {
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .close-button:hover {
+        color: #f1f1f1;
+      }
+      .modal-body {
+        padding: 1.5rem;
+      }
+      .modal-body h3 {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 0.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .example {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      .example-solution {
+        background: #eaf7e9;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: bold;
+        color: #2b7d2d;
+        margin: 0.5rem 0;
+      }
+      .step {
+        display: flex;
+        align-items: flex-start;
+        margin-top: 0.5rem;
+      }
+      .step-number {
+        background-color: var(--secondary-color);
+        color: white;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 10px;
+        flex-shrink: 0;
+      }
     </style>
   </head>
   <body>
@@ -126,6 +231,17 @@
       <main class="main-content" id="main-content">
         <!-- El contenido se generará dinámicamente aquí -->
       </main>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="lesson-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title"></h2>
+          <span class="close-button">&times;</span>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
     </div>
 
     <script src="content.js"></script>
@@ -146,6 +262,7 @@
 
         updateHeaders(grade, subjectName);
         renderContent(module);
+        setupModal();
       });
 
       function parseModuleId(module) {
@@ -204,10 +321,16 @@
               <div class="lesson-grid">
                 ${unit.lessons
                   .map(
-                    (lesson) => `
-                  <div class="lesson-card">
-                    <h4>${lesson.title}</h4>
-                    <p>${lesson.content}</p>
+                    (lesson, index) => `
+                  <div class="lesson-card" data-lesson-index="${index}" data-unit-title="${unit.title}">
+                    <h4><i class="${lesson.icon || 'fas fa-book'}"></i>${
+                      lesson.title
+                    }</h4>
+                    <p>${
+                      lesson.theory
+                        ? lesson.theory.substring(0, 100) + "..."
+                        : lesson.content
+                    }</p>
                   </div>`
                   )
                   .join("")}
@@ -215,6 +338,76 @@
             </section>`;
         });
         contentArea.innerHTML = html;
+
+        // Add event listeners to the new cards
+        document.querySelectorAll(".lesson-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            const unitTitle = card.dataset.unitTitle;
+            const lessonIndex = parseInt(card.dataset.lessonIndex);
+            const unit = data.units.find(u => u.title === unitTitle);
+            const lesson = unit.lessons[lessonIndex];
+            openModal(lesson);
+          });
+        });
+      }
+
+      function setupModal() {
+        const modal = document.getElementById("lesson-modal");
+        const closeButton = document.querySelector(".close-button");
+
+        closeButton.onclick = () => {
+          modal.style.display = "none";
+        };
+        window.onclick = (event) => {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        };
+      }
+
+      function openModal(lesson) {
+        const modal = document.getElementById("lesson-modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
+
+        if (!lesson.theory) {
+            // Handle lessons with only simple content
+            modalTitle.innerText = lesson.title;
+            modalBody.innerHTML = `<p>${lesson.content}</p>`;
+            modal.style.display = "flex";
+            return;
+        }
+
+        modalTitle.innerText = lesson.title;
+        let bodyHtml = `
+            <h3>Teoría</h3>
+            <p>${lesson.theory}</p>`;
+
+        if (lesson.examples && lesson.examples.length > 0) {
+          bodyHtml += `<h3>Ejemplos</h3>`;
+          lesson.examples.forEach((example) => {
+            bodyHtml += `
+                <div class="example">
+                    <strong>Problema:</strong> ${example.problem}
+                    <div class="example-solution">
+                        <strong>Solución:</strong> ${example.solution}
+                    </div>
+                    <strong>Pasos:</strong>
+                    ${example.steps
+                      .map(
+                        (step) => `
+                        <div class="step">
+                            <span class="step-number">${step.step}</span>
+                            <p>${step.explanation}</p>
+                        </div>`
+                      )
+                      .join("")}
+                </div>`;
+          });
+        }
+
+        modalBody.innerHTML = bodyHtml;
+        modal.style.display = "flex";
       }
     </script>
   </body>
