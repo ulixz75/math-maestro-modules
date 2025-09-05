@@ -1082,90 +1082,165 @@
       </div>
     </div>
 
+    <script src="content.js"></script>
     <script>
       // --- DYNAMIC CONTENT LOADER ---
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
-        const module = params.get("module"); // e.g., "g7-matematicas"
+        const module = params.get("module");
         if (!module) {
           displayError("Módulo no especificado.");
           return;
         }
 
-        const { grade, subject, subjectName } = parseModuleId(module);
-        if (!grade || !subject) {
+        const { grade, subjectName } = parseModuleId(module);
+        if (!grade || !subjectName) {
           displayError("ID de módulo inválido.");
           return;
         }
 
         updateHeaders(grade, subjectName);
-        renderContent(grade, subject);
+        renderExercises(module);
       });
 
       function parseModuleId(module) {
         const parts = module.match(/^g(\d+)-(.+)$/);
         if (!parts) return {};
-
         const grade = `${parts[1]}mo Grado`;
         const subjectId = parts[2];
-        const subjectName = subjectId
-          .replace(/-/g, " ")
-          .replace(/\b\w/g, (c) => c.toUpperCase());
-        return { grade, subject: subjectId, subjectName };
+        const subjectName =
+          subjectId.charAt(0).toUpperCase() +
+          subjectId.slice(1).replace(/-/g, " ");
+        return { grade, subjectId, subjectName };
       }
 
       function updateHeaders(grade, subjectName) {
         const headerTitle = document.querySelector(".header h1");
         const pageTitle = document.querySelector("title");
         const breadcrumb = document.querySelector(".header p");
-
         const fullTitle = `Ejercicios de ${subjectName}`;
-        headerTitle.innerHTML = `<i class="fas fa-pen-to-square"></i> ${fullTitle}`;
-        pageTitle.textContent = fullTitle;
-        breadcrumb.textContent = `Módulo de práctica para ${grade}`;
+        if (headerTitle)
+          headerTitle.innerHTML = `<i class="fas fa-pen-to-square"></i> ${fullTitle}`;
+        if (pageTitle) pageTitle.textContent = fullTitle;
+        if (breadcrumb)
+          breadcrumb.textContent = `Módulo de práctica para ${grade}`;
       }
 
       function displayError(message) {
         const contentArea = document.querySelector(".main-content");
+        if (!contentArea) return;
         contentArea.innerHTML = `
-                <div class="card highlight" style="text-align: center; width: 100%;">
-                    <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
-                    <p>${message}</p>
-                    <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
-                </div>
-            `;
+            <div class="card highlight" style="text-align: center; width: 100%;">
+                <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
+                <p>${message}</p>
+                <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
+            </div>`;
       }
 
-      function renderContent(grade, subject) {
+      function renderExercises(module) {
         const contentArea = document.querySelector(".main-content");
+        if (typeof contentData === 'undefined' || !contentData[module] || !contentData[module].units) {
+          contentArea.innerHTML = `
+            <div class="not-found-card card" style="text-align: center; padding: 2rem; width: 100%;">
+                <h2><i class="fas fa-search"></i> Contenido no encontrado</h2>
+                <p>Aún no hemos agregado ejercicios para este módulo. ¡Vuelve pronto!</p>
+                <a href="javascript:history.back()" class="btn" style="margin-top: 1rem;">Volver</a>
+            </div>`;
+          return;
+        }
 
-        // For this example, we'll just show a placeholder.
-        // In a real application, you would fetch and render specific exercises.
+        const data = contentData[module];
         contentArea.innerHTML = `
-            <div style="text-align: center; padding: 2rem; width: 100%;">
-                <div class="card success">
-                    <h2><i class="fas fa-check-circle"></i> Módulo Cargado Exitosamente</h2>
-                    <p>
-                        Mostrando ejercicios para <strong>${subject
-                          .replace(/-/g, " ")
-                          .toUpperCase()}</strong> de <strong>${grade}</strong>.
-                    </p>
-                </div>
-                <div class="card" style="margin-top: 2rem;">
-                     <h3>Contenido de Ejercicios</h3>
-                     <p>Aquí se mostraría una lista de ejercicios interactivos específicos para la materia y el grado seleccionados.</p>
-                     <div class="visual-example" style="margin-top: 1rem;">
-                        <i class="fas fa-tasks" style="font-size: 3rem; color: var(--primary-color);"></i>
-                        <p style="margin-top: 1rem;">[Ejercicios de práctica para ${subject
-                          .replace(/-/g, " ")
-                          .toUpperCase()}...]</p>
-                     </div>
-                </div>
-                 <a href="javascript:history.back()" class="btn" style="margin-top: 2rem;">
-                    <i class="fas fa-arrow-left"></i> Volver a la materia
-                 </a>
-            </div>
+            <nav class="sidebar" aria-label="Navegación de unidades">
+                <h3><i class="fas fa-book" aria-hidden="true"></i> Unidades</h3>
+                <div id="sidebar-nav-items"></div>
+            </nav>
+            <main class="content-area" role="main" id="exercise-main-content"></main>
         `;
+
+        const sidebarNav = document.getElementById('sidebar-nav-items');
+        const exerciseContent = document.getElementById('exercise-main-content');
+        let firstUnitId = '';
+
+        data.units.forEach((unit, index) => {
+            const unitId = `unit-${index}`;
+            if(index === 0) firstUnitId = unitId;
+
+            const navItem = document.createElement('div');
+            navItem.className = 'nav-item';
+            navItem.dataset.unitId = unitId;
+            navItem.innerHTML = `<span>${unit.title}</span><span class="status-badge">📚</span>`;
+            navItem.onclick = () => showUnit(unitId, data);
+            sidebarNav.appendChild(navItem);
+        });
+
+        if(firstUnitId) {
+            showUnit(firstUnitId, data);
+            const firstNavItem = sidebarNav.querySelector('.nav-item');
+            if(firstNavItem) firstNavItem.classList.add('active');
+        } else {
+            exerciseContent.innerHTML = '<h2>No hay unidades con ejercicios en este módulo.</h2>';
+        }
+      }
+
+      function showUnit(unitId, data) {
+        const unitIndex = parseInt(unitId.split('-')[1]);
+        const unit = data.units[unitIndex];
+        const exerciseContent = document.getElementById('exercise-main-content');
+
+        document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.unitId === unitId);
+        });
+
+        let exercisesHtml = `<h2><i class="fas fa-tasks"></i> ${unit.title}</h2>`;
+        let hasExercises = false;
+
+        unit.lessons.forEach((lesson, lessonIndex) => {
+            if(lesson.examples && lesson.examples.length > 0) {
+                hasExercises = true;
+                exercisesHtml += `<div class="card highlight"><h3>${lesson.title}</h3></div>`;
+                lesson.examples.forEach((ex, exIndex) => {
+                    const exerciseId = `ex-${unitIndex}-${lessonIndex}-${exIndex}`;
+                    exercisesHtml += `
+                        <div class="exercise">
+                            <div class="exercise-header">
+                                <span class="exercise-title">${ex.problem}</span>
+                            </div>
+                            <div class="input-group">
+                                <input type="text" class="math-input" id="answer-${exerciseId}" placeholder="Tu respuesta">
+                                <button class="btn" onclick="checkAnswer('${exerciseId}', '${ex.solution}')">Verificar</button>
+                            </div>
+                            <div class="feedback" id="feedback-${exerciseId}"></div>
+                        </div>
+                    `;
+                });
+            }
+        });
+
+        if(!hasExercises){
+            exercisesHtml += '<p>No hay ejercicios en esta unidad.</p>';
+        }
+
+        exerciseContent.innerHTML = exercisesHtml;
+      }
+
+      function checkAnswer(exerciseId, correctAnswer) {
+          const answerInput = document.getElementById(`answer-${exerciseId}`);
+          const userAnswer = answerInput.value.trim();
+          const feedbackEl = document.getElementById(`feedback-${exerciseId}`);
+
+          const normalizedUserAnswer = userAnswer.replace(/\s/g, '');
+          const normalizedCorrectAnswer = String(correctAnswer).replace(/\s/g, '');
+
+          if (normalizedUserAnswer.toLowerCase() === normalizedCorrectAnswer.toLowerCase()) {
+              feedbackEl.innerHTML = '<i class="fas fa-check-circle"></i> ¡Correcto!';
+              feedbackEl.className = 'feedback correct show';
+              answerInput.style.borderColor = 'var(--success-color)';
+          } else {
+              feedbackEl.innerHTML = `Incorrecto. La respuesta correcta es: <strong>${correctAnswer}</strong>`;
+              feedbackEl.className = 'feedback incorrect show';
+              answerInput.style.borderColor = 'var(--error-color)';
+          }
       }
     </script>
   </body>
