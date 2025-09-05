@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ejercicios de Práctica - Expresiones Algebraicas</title>
+    <title>Ejercicios de Práctica</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link rel="stylesheet" href="style.css" />
     <style>
       :root {
           --primary-color: #4ecdc4;
@@ -21,13 +22,6 @@
           --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
       }
-
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-      }
-
       body {
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           background: linear-gradient(135deg, var(--secondary-color) 0%, #764ba2 100%);
@@ -36,7 +30,6 @@
           line-height: 1.6;
           padding: 20px;
       }
-
       .app-container {
           max-width: 1200px;
           margin: 0 auto;
@@ -44,10 +37,9 @@
           min-height: 90vh;
           box-shadow: var(--shadow-hover);
           border-radius: 20px;
-          overflow-x: hidden;
+          overflow: hidden;
           position: relative;
       }
-
       .header {
           background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
           color: white;
@@ -58,94 +50,15 @@
           z-index: 100;
           box-shadow: var(--shadow);
       }
-
-      .header h1 {
-          font-size: 2.5rem;
-          margin-bottom: 0.5rem;
-          font-weight: 700;
-      }
-
-      .header p {
-          font-size: 1.1rem;
-          opacity: 0.9;
-      }
-
-      .progress-container {
-          padding: 1rem 2rem;
-          background: white;
-          border-bottom: 1px solid #eee;
-          position: sticky;
-          top: 140px;
-          z-index: 99;
-          display: flex;
-          flex-direction: column;
-      }
-
-      .progress-bar {
-          width: 100%;
-          height: 8px;
-          background: #e9ecef;
-          border-radius: 4px;
-          overflow: hidden;
-          margin-bottom: 1rem;
-      }
-
-      .progress-fill {
-          height: 100%;
-          background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-          width: 0%;
-          transition: width 0.5s ease;
-      }
-
-      .progress-info {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 0.9rem;
-          color: #666;
-      }
-
-      .section-progress {
-          display: flex;
-          gap: 5px;
-          margin-top: 10px;
-      }
-
-      .section-dot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #e9ecef;
-          cursor: pointer;
-          transition: all 0.3s;
-      }
-
-      .section-dot.completed {
-          background: var(--success-color);
-      }
-
-      .section-dot.current {
-          background: var(--primary-color);
-          transform: scale(1.2);
-      }
-
-      .main-content {
-          display: flex;
-          min-height: calc(100vh - 200px);
-      }
-
+      .header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; font-weight: 700; }
+      .header p { font-size: 1.1rem; opacity: 0.9; }
+      .main-content { display: flex; min-height: calc(100vh - 200px); }
       .sidebar {
           width: 280px;
           background: var(--bg-light);
           padding: 2rem 1.5rem;
           border-right: 1px solid #dee2e6;
-          position: sticky;
-          top: 200px;
-          height: fit-content;
-          overflow-y: auto;
-          max-height: calc(100vh - 200px);
       }
-
       .sidebar h3 {
           color: var(--text-color);
           margin-bottom: 1rem;
@@ -154,7 +67,6 @@
           align-items: center;
           gap: 10px;
       }
-
       .nav-item {
           display: flex;
           justify-content: space-between;
@@ -169,509 +81,83 @@
           background: white;
           cursor: pointer;
       }
-
       .nav-item.active {
           background: var(--primary-color);
           color: white;
           border-color: var(--secondary-color);
           font-weight: bold;
       }
-
       .nav-item:hover:not(.active) {
           background: #f0faff;
           color: var(--primary-color);
           transform: translateX(3px);
           transition: all 0.2s ease;
       }
-
       .content-area {
           flex: 1;
           padding: 2rem;
-          position: relative;
       }
-
-      .section {
-          display: none;
-          animation: fadeIn 0.5s ease-in;
-      }
-
-      .section.active {
-          display: block;
-      }
-
-      @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-      }
-
-      .section h2 {
-          color: var(--text-color);
-          margin-bottom: 2rem;
-          font-size: 2rem;
-          border-bottom: 3px solid var(--primary-color);
-          padding-bottom: 0.5rem;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-      }
-
       .card {
           background: white;
           border-radius: 12px;
           padding: 2rem;
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
           box-shadow: var(--shadow);
           border: 1px solid #e9ecef;
-          transition: all 0.3s ease;
       }
-
-      .card:hover {
-          box-shadow: var(--shadow-hover);
-          transform: translateY(-2px);
-      }
-
       .card.highlight {
           border-left: 5px solid var(--primary-color);
-          background: linear-gradient(135deg, #f8f9ff, #fff);
       }
-
-      .card.warning {
-          border-left: 5px solid var(--warning-color);
-          background: linear-gradient(135deg, #fffdf7, #fff);
-      }
-
-      .card.success {
-          border-left: 5px solid var(--success-color);
-          background: linear-gradient(135deg, #f7fff7, #fff);
-      }
-
-      .exercise-container {
-          background: var(--bg-light);
-          border-radius: 12px;
-          padding: 2rem;
-          margin: 2rem 0;
-      }
-
       .exercise {
-          background: white;
+          background: #fdfdff;
           border-radius: 10px;
           padding: 1.5rem;
           margin-bottom: 1.5rem;
-          border: 2px solid #e9ecef;
+          border: 1px solid #e9ecef;
+          box-shadow: var(--shadow);
           transition: all 0.3s ease;
-          position: relative;
       }
-
       .exercise:hover {
-          border-color: var(--primary-color);
+          box-shadow: var(--shadow-hover);
+          transform: translateY(-2px);
       }
-
-      .exercise.completed {
-          border-color: var(--success-color);
-          background: linear-gradient(135deg, #f7fff7, #fff);
-      }
-
       .exercise-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 1rem;
-          flex-wrap: wrap;
-          gap: 10px;
-          padding-bottom: 0.5rem;
+          padding-bottom: 1rem;
           border-bottom: 1px solid #eee;
       }
-
-      .exercise-title {
-          font-size: 1.2rem;
-          font-weight: 600;
-          color: var(--text-color);
-      }
-
+      .exercise-title { font-weight: 600; font-size: 1.2rem; color: var(--text-color); }
       .difficulty-badge {
           padding: 0.25rem 0.75rem;
           border-radius: 20px;
           font-size: 0.8rem;
           font-weight: 500;
-      }
-
-      .difficulty-easy {
-          background: #d4edda;
-          color: #155724;
-      }
-
-      .difficulty-medium {
-          background: #fff3cd;
-          color: #856404;
-      }
-
-      .difficulty-hard {
-          background: #f8d7da;
-          color: #721c24;
-      }
-
-      .step-by-step {
-          background: #f8f9ff;
-          border: 1px solid #e1e5fe;
-          border-radius: 8px;
-          padding: 1.5rem;
-          margin: 1rem 0;
-      }
-
-      .step {
-          display: flex;
-          align-items: flex-start;
-          margin-bottom: 1rem;
-          padding: 0.75rem;
-          background: white;
-          border-radius: 6px;
-          border-left: 4px solid var(--primary-color);
-      }
-
-      .step-number {
-          background: var(--primary-color);
           color: white;
-          min-width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          margin-right: 1rem;
-          flex-shrink: 0;
       }
-
-      .input-group {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          margin: 1.5rem 0;
-          flex-wrap: wrap;
-      }
-
+      .difficulty-Fácil { background: var(--success-color); }
+      .difficulty-Medio { background: var(--warning-color); }
+      .difficulty-Difícil { background: var(--error-color); }
+      .input-group { margin: 1.5rem 0; display: flex; align-items: center; gap: 1rem; }
       .math-input {
-          width: 150px;
           padding: 0.75rem;
           border: 2px solid #e9ecef;
           border-radius: 8px;
           font-size: 1.1rem;
-          text-align: center;
           transition: all 0.3s ease;
       }
-
       .math-input:focus {
           outline: none;
           border-color: var(--primary-color);
           box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
       }
-
-      .btn {
-          background: var(--primary-color);
-          color: white;
-          border: none;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 1rem;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-      }
-
-      .btn:hover {
-          background: #45b7aa;
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-hover);
-      }
-
-      .btn:active {
-          transform: translateY(0);
-      }
-
-      .btn-secondary {
-          background: #6c757d;
-      }
-
-      .btn-secondary:hover {
-          background: #5a6268;
-      }
-
-      .btn-hint {
-          background: var(--warning-color);
-      }
-
-      .btn-hint:hover {
-          background: #e67e22;
-      }
-
-      .feedback {
-          margin-top: 1rem;
-          padding: 1rem;
-          border-radius: 8px;
-          font-weight: 500;
-          display: none;
-      }
-
-      .feedback.show {
-          display: block;
-          animation: slideIn 0.3s ease;
-      }
-
-      @keyframes slideIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-      }
-
-      .feedback.correct {
-          background: linear-gradient(135deg, #d4edda, #c3e6cb);
-          color: #155724;
-          border: 1px solid #c3e6cb;
-      }
-
-      .feedback.incorrect {
-          background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-          color: #721c24;
-          border: 1px solid #f5c6cb);
-      }
-
-      .feedback.hint {
-          background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-          color: #856404;
-          border: 1px solid #ffeaa7;
-      }
-
-      .stats-panel {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 1rem;
-          margin: 2rem 0;
-      }
-
-      .stat-card {
-          background: white;
-          padding: 1.5rem;
-          border-radius: 12px;
-          text-align: center;
-          border: 1px solid #e9ecef;
-          box-shadow: var(--shadow);
-      }
-
-      .stat-number {
-          font-size: 2.5rem;
-          font-weight: bold;
-          color: var(--primary-color);
-          display: block;
-      }
-
-      .stat-label {
-          font-size: 0.9rem;
-          color: #666;
-          margin-top: 0.5rem;
-      }
-
-      .reference-card {
-          background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
-          border: 1px solid #bbdefb;
-          border-radius: 12px;
-          padding: 1.5rem;
-          margin: 1rem 0;
-      }
-
-      .reference-title {
-          font-weight: bold;
-          color: var(--text-color);
-          margin-bottom: 1rem;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-      }
-
-      code {
-          background: #e9ecef;
-          padding: 0.25rem 0.5rem;
-          border-radius: 4px;
-          font-family: 'Courier New', Courier, monospace;
-          color: #e83e8c;
-          display: inline-block;
-          margin-top: 5px;
-      }
-
-      .visual-example {
-          background: white;
-          border-radius: 10px;
-          padding: 2rem;
-          margin: 1.5rem 0;
-          text-align: center;
-          border: 2px dashed var(--primary-color);
-      }
-
-      .nav-buttons {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 2rem;
-      }
-
-      .expression-input {
-          width: 100%;
-          padding: 0.75rem;
-          border: 2px solid #e9ecef;
-          border-radius: 8px;
-          font-size: 1.1rem;
-          font-family: 'Courier New', monospace;
-          margin-bottom: 1rem;
-      }
-
-      .algebra-visualization {
-          display: flex;
-          justify-content: center;
-          gap: 1rem;
-          margin: 1.5rem 0;
-          flex-wrap: wrap;
-      }
-
-      .algebra-term {
-          background: white;
-          border-radius: 8px;
-          padding: 1rem;
-          box-shadow: var(--shadow);
-          text-align: center;
-          min-width: 80px;
-      }
-
-      .term-coefficient {
-          font-weight: bold;
-          color: var(--primary-color);
-      }
-
-      .term-variable {
-          color: var(--secondary-color);
-      }
-
-      .term-operator {
-          font-size: 1.5rem;
-          align-self: center;
-      }
-
-      .multiple-choice {
-          margin: 1.5rem 0;
-      }
-
-      .option {
-          padding: 1rem;
-          margin: 0.5rem 0;
-          border: 2px solid #e9ecef;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-      }
-
-      .option:hover {
-          background: #f8f9fa;
-          border-color: var(--primary-color);
-      }
-
-      .option.selected {
-          background: #e3f2fd;
-          border-color: var(--primary-color);
-      }
-
-      .option.correct {
-          background: #d4edda;
-          border-color: var(--success-color);
-      }
-
-      .option.incorrect {
-          background: #f8d7da;
-          border-color: var(--error-color);
-      }
-
-      /* Responsive */
-      @media (max-width: 768px) {
-          body { padding: 10px; }
-          .app-container { border-radius: 10px; min-height: calc(100vh - 20px); }
-          .header h1 { font-size: 1.5rem; }
-          .header p { font-size: 0.9rem; }
-          .header { padding: 1.5rem 1rem; }
-          .main-content { flex-direction: column; }
-          .sidebar {
-              width: 100%;
-              position: static;
-              order: 2;
-              padding: 1rem;
-              max-height: none;
-              height: auto;
-              border-right: none;
-              border-top: 1px solid #dee2e6;
-          }
-          .content-area { padding: 1rem; order: 1; }
-          .progress-container { padding: 0.75rem 1rem; position: static; }
-          .input-group { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-          .math-input { width: 100%; max-width: 200px; margin: 0 auto; }
-          .btn { width: 100%; max-width: 220px; margin: 0 auto; padding: 0.75rem; justify-content: center; }
-          .card { padding: 1.25rem; margin-bottom: 1.5rem; }
-          .section h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
-          .stats-panel { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-          .nav-buttons { flex-direction: column; gap: 1rem; }
-          .nav-buttons .btn { width: 100%; }
-          .exercise-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-      }
-
-      @media (max-width: 480px) {
-          .header h1 { font-size: 1.3rem; }
-          .stats-panel { grid-template-columns: 1fr; }
-          .card { padding: 1rem; }
-          .section h2 { font-size: 1.3rem; }
-      }
-      /* Modal Styles */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-      }
-      .modal-content {
-        background-color: #fff;
-        margin: 20px;
-        border-radius: 10px;
-        width: 80%;
-        max-width: 1200px;
-        height: 80%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      .modal-header {
-        display: flex;
-        justify-content: flex-end;
-        padding: 10px;
-        background: #f1f1f1;
-        border-bottom: 1px solid #ddd;
-      }
-      .modal-header span {
-        font-size: 1.5rem;
-        cursor: pointer;
-      }
-      .modal-body {
-        flex: 1;
-        padding: 0;
-      }
-      .modal-body iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-      }
-      #open-modal {
-        cursor: pointer;
-      }
+      .feedback { margin-top: 1rem; padding: 1rem; border-radius: 8px; font-weight: 500; display: none; }
+      .feedback.correct { background: linear-gradient(135deg, #d4edda, #c3e6cb); color: #155724; border: 1px solid #c3e6cb; }
+      .feedback.incorrect { background: linear-gradient(135deg, #f8d7da, #f5c6cb); color: #721c24; border: 1px solid #f5c6cb; }
+      .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       .page-nav-buttons {
         position: fixed;
         bottom: 20px;
@@ -680,488 +166,45 @@
         display: flex;
         gap: 10px;
       }
+      .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+      .modal-content { background-color: #fff; margin: 20px; border-radius: 10px; width: 80%; max-width: 1200px; height: 80%; display: flex; flex-direction: column; overflow: hidden; }
+      .modal-header { display: flex; justify-content: flex-end; padding: 10px; background: #f1f1f1; border-bottom: 1px solid #ddd; }
+      .modal-header span { font-size: 1.5rem; cursor: pointer; }
+      .modal-body { flex: 1; padding: 0; }
+      .modal-body iframe { width: 100%; height: 100%; border: none; }
+      #open-modal { cursor: pointer; }
     </style>
   </head>
   <body>
     <div class="app-container">
       <div class="header">
-        <h1>
-          <i class="fas fa-pencil-alt" aria-hidden="true"></i> Ejercicios de
-          Práctica: Expresiones Algebraicas
-        </h1>
-        <p>Pon a prueba tus conocimientos con ejercicios interactivos</p>
+        <h1><i class="fas fa-pencil-alt"></i> Ejercicios de Práctica</h1>
+        <p>Pon a prueba tus conocimientos</p>
       </div>
-
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-info">
-          <span id="progressText">Sección 1 de 4</span>
-          <span id="completionRate">0% completado</span>
-        </div>
-        <div class="section-progress" id="sectionProgress"></div>
-      </div>
-
-      <div class="main-content">
-        <nav class="sidebar" aria-label="Navegación principal">
-          <h3>
-            <i class="fas fa-book" aria-hidden="true"></i> Categorías de
-            Ejercicios
-          </h3>
-          <div class="nav-item active" onclick="showSection(1)">
-            <span>1. Identificación</span><span class="status-badge">🔍</span>
-          </div>
-          <div class="nav-item" onclick="showSection(2)">
-            <span>2. Simplificación</span><span class="status-badge">🧮</span>
-          </div>
-          <div class="nav-item" onclick="showSection(3)">
-            <span>3. Evaluación</span><span class="status-badge">📊</span>
-          </div>
-          <div class="nav-item" onclick="showSection(4)">
-            <span>4. Propiedades</span><span class="status-badge">⚖️</span>
-          </div>
-          <div class="stats-panel" style="margin-top: 2rem">
-            <div class="stat-card">
-              <span class="stat-number" id="totalScore">0</span>
-              <span class="stat-label">Puntos</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" id="accuracy">0%</span>
-              <span class="stat-label">Precisión</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-number" id="exercisesCompleted">0</span>
-              <span class="stat-label">Completados</span>
-            </div>
-          </div>
-        </nav>
-
-        <main class="content-area" role="main">
-          <!-- Sección 1: Identificación -->
-          <section class="section active" id="section1">
-            <h2>
-              <i class="fas fa-search" aria-hidden="true"></i> Identificación de
-              Elementos
-            </h2>
-            <div class="card highlight">
-              <h3>Identifica variables, constantes y términos semejantes</h3>
-              <p>
-                Estos ejercicios te ayudarán a reconocer los diferentes
-                componentes de las expresiones algebraicas.
-              </p>
-            </div>
-
-            <div class="exercise-container">
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 1: Variables vs Constantes</span
-                  >
-                  <span class="difficulty-badge difficulty-easy">Fácil</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> En la expresión 3x + 2y - 5,
-                  identifica las variables y constantes.
-                </p>
-                <div class="multiple-choice">
-                  <div class="option" onclick="selectOption(this, '1a')">
-                    <strong>A)</strong> Variables: 3, 2; Constantes: x, y, 5
-                  </div>
-                  <div class="option" onclick="selectOption(this, '1a')">
-                    <strong>B)</strong> Variables: x, y; Constantes: 3, 2, 5
-                  </div>
-                  <div class="option" onclick="selectOption(this, '1a')">
-                    <strong>C)</strong> Variables: 3x, 2y; Constantes: -5
-                  </div>
-                  <div
-                    class="option correct-option"
-                    onclick="selectOption(this, '1a')"
-                  >
-                    <strong>D)</strong> Variables: x, y; Constantes: 3, 2, -5
-                  </div>
-                </div>
-                <div class="input-group">
-                  <button class="btn" onclick="checkMultipleChoice('1a', 'D')">
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('1a')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback1a"></div>
-                <div class="feedback hint" id="hint1a" style="display: none">
-                  Recuerda: las variables son letras que representan valores
-                  desconocidos, las constantes son números fijos.
-                </div>
-              </div>
-
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 2: Términos Semejantes</span
-                  >
-                  <span class="difficulty-badge difficulty-medium">Medio</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> ¿Cuáles de estos términos son
-                  semejantes: 3x, 2y, -5x, 4xy?
-                </p>
-                <div class="multiple-choice">
-                  <div class="option" onclick="selectOption(this, '1b')">
-                    <strong>A)</strong> 3x y 2y
-                  </div>
-                  <div
-                    class="option correct-option"
-                    onclick="selectOption(this, '1b')"
-                  >
-                    <strong>B)</strong> 3x y -5x
-                  </div>
-                  <div class="option" onclick="selectOption(this, '1b')">
-                    <strong>C)</strong> 2y y 4xy
-                  </div>
-                  <div class="option" onclick="selectOption(this, '1b')">
-                    <strong>D)</strong> Todos son semejantes
-                  </div>
-                </div>
-                <div class="input-group">
-                  <button class="btn" onclick="checkMultipleChoice('1b', 'B')">
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('1b')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback1b"></div>
-                <div class="feedback hint" id="hint1b" style="display: none">
-                  Los términos semejantes tienen las mismas variables con los
-                  mismos exponentes.
-                </div>
-              </div>
-            </div>
-            <div class="nav-buttons">
-              <button class="btn btn-secondary" disabled aria-disabled="true">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
-              </button>
-              <button class="btn" onclick="showSection(2)">
-                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
-              </button>
-            </div>
-          </section>
-
-          <!-- Sección 2: Simplificación -->
-          <section class="section" id="section2">
-            <h2>
-              <i class="fas fa-compress-arrows-alt" aria-hidden="true"></i>
-              Simplificación de Expresiones
-            </h2>
-            <div class="card highlight">
-              <h3>Simplifica expresiones combinando términos semejantes</h3>
-              <p>
-                Practica la simplificación de expresiones algebraicas paso a
-                paso.
-              </p>
-            </div>
-
-            <div class="exercise-container">
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 1: Simplificación básica</span
-                  >
-                  <span class="difficulty-badge difficulty-easy">Fácil</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> Simplifica la expresión: 3x + 2y -
-                  x + 4y
-                </p>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="math-input"
-                    id="answer2a"
-                    placeholder="Ej: 2x + 6y"
-                  />
-                  <button
-                    class="btn"
-                    onclick="checkAlgebraAnswer('2a', '2x+6y')"
-                  >
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('2a')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback2a"></div>
-                <div class="feedback hint" id="hint2a" style="display: none">
-                  Agrupa términos con x: 3x - x = 2x. Agrupa términos con y: 2y
-                  + 4y = 6y.
-                </div>
-              </div>
-
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 2: Simplificación avanzada</span
-                  >
-                  <span class="difficulty-badge difficulty-medium">Medio</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> Simplifica: 2x² + 3xy - x² + 2xy -
-                  5y
-                </p>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="math-input"
-                    id="answer2b"
-                    placeholder="Ej: x²+5xy-5y"
-                  />
-                  <button
-                    class="btn"
-                    onclick="checkAlgebraAnswer('2b', 'x²+5xy-5y')"
-                  >
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('2b')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback2b"></div>
-                <div class="feedback hint" id="hint2b" style="display: none">
-                  Agrupa términos x²: 2x² - x² = x². Agrupa términos xy: 3xy +
-                  2xy = 5xy. El término -5y no tiene semejantes.
-                </div>
-              </div>
-            </div>
-            <div class="nav-buttons">
-              <button class="btn btn-secondary" onclick="showSection(1)">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
-              </button>
-              <button class="btn" onclick="showSection(3)">
-                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
-              </button>
-            </div>
-          </section>
-
-          <!-- Sección 3: Evaluación -->
-          <section class="section" id="section3">
-            <h2>
-              <i class="fas fa-calculator" aria-hidden="true"></i> Evaluación de
-              Expresiones
-            </h2>
-            <div class="card highlight">
-              <h3>Evalúa expresiones sustituyendo valores</h3>
-              <p>
-                Practica la evaluación de expresiones algebraicas con valores
-                específicos.
-              </p>
-            </div>
-
-            <div class="exercise-container">
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 1: Evaluación simple</span
-                  >
-                  <span class="difficulty-badge difficulty-easy">Fácil</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> Evalúa la expresión 3x + 4 cuando x
-                  = 2
-                </p>
-                <div class="input-group">
-                  <input
-                    type="number"
-                    class="math-input"
-                    id="answer3a"
-                    placeholder="Resultado"
-                  />
-                  <button class="btn" onclick="checkAnswer('3a', 10)">
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('3a')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback3a"></div>
-                <div class="feedback hint" id="hint3a" style="display: none">
-                  Sustituye x por 2: 3(2) + 4 = 6 + 4 = 10
-                </div>
-              </div>
-
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 2: Evaluación con múltiples variables</span
-                  >
-                  <span class="difficulty-badge difficulty-medium">Medio</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> Evalúa 2x + 3y - z cuando x=3, y=2,
-                  z=1
-                </p>
-                <div class="input-group">
-                  <input
-                    type="number"
-                    class="math-input"
-                    id="answer3b"
-                    placeholder="Resultado"
-                  />
-                  <button class="btn" onclick="checkAnswer('3b', 11)">
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('3b')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback3b"></div>
-                <div class="feedback hint" id="hint3b" style="display: none">
-                  Sustituye: 2(3) + 3(2) - 1 = 6 + 6 - 1 = 11
-                </div>
-              </div>
-            </div>
-            <div class="nav-buttons">
-              <button class="btn btn-secondary" onclick="showSection(2)">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
-              </button>
-              <button class="btn" onclick="showSection(4)">
-                Siguiente <i class="fas fa-arrow-right" aria-hidden="true"></i>
-              </button>
-            </div>
-          </section>
-
-          <!-- Sección 4: Propiedades -->
-          <section class="section" id="section4">
-            <h2>
-              <i class="fas fa-cogs" aria-hidden="true"></i> Propiedades
-              Algebraicas
-            </h2>
-            <div class="card highlight">
-              <h3>Aplica propiedades algebraicas</h3>
-              <p>
-                Practica la aplicación de las propiedades conmutativa,
-                asociativa y distributiva.
-              </p>
-            </div>
-
-            <div class="exercise-container">
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 1: Propiedad distributiva</span
-                  >
-                  <span class="difficulty-badge difficulty-easy">Fácil</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> Aplica la propiedad distributiva
-                  en: 2(3x - 4)
-                </p>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="math-input"
-                    id="answer4a"
-                    placeholder="Ej: 6x-8"
-                  />
-                  <button
-                    class="btn"
-                    onclick="checkAlgebraAnswer('4a', '6x-8')"
-                  >
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('4a')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback4a"></div>
-                <div class="feedback hint" id="hint4a" style="display: none">
-                  Multiplica cada término dentro del paréntesis por 2: 2*3x y
-                  2*(-4)
-                </div>
-              </div>
-
-              <div class="exercise">
-                <div class="exercise-header">
-                  <span class="exercise-title"
-                    >Ejercicio 2: Identificación de propiedades</span
-                  >
-                  <span class="difficulty-badge difficulty-medium">Medio</span>
-                </div>
-                <p>
-                  <strong>Problema:</strong> ¿Qué propiedad se aplica en la
-                  expresión: (2x + 3y) + 4z = 2x + (3y + 4z)?
-                </p>
-                <div class="multiple-choice">
-                  <div class="option" onclick="selectOption(this, '4b')">
-                    <strong>A)</strong> Propiedad Conmutativa
-                  </div>
-                  <div
-                    class="option correct-option"
-                    onclick="selectOption(this, '4b')"
-                  >
-                    <strong>B)</strong> Propiedad Asociativa
-                  </div>
-                  <div class="option" onclick="selectOption(this, '4b')">
-                    <strong>C)</strong> Propiedad Distributiva
-                  </div>
-                  <div class="option" onclick="selectOption(this, '4b')">
-                    <strong>D)</strong> Propiedad de Identidad
-                  </div>
-                </div>
-                <div class="input-group">
-                  <button class="btn" onclick="checkMultipleChoice('4b', 'B')">
-                    Verificar
-                  </button>
-                  <button class="btn btn-hint" onclick="showHint('4b')">
-                    Pista
-                  </button>
-                </div>
-                <div class="feedback" id="feedback4b"></div>
-                <div class="feedback hint" id="hint4b" style="display: none">
-                  La propiedad asociativa establece que la forma de agrupar los
-                  términos no altera el resultado.
-                </div>
-              </div>
-            </div>
-            <div class="nav-buttons">
-              <button class="btn btn-secondary" onclick="showSection(3)">
-                <i class="fas fa-arrow-left" aria-hidden="true"></i> Anterior
-              </button>
-              <button class="btn" onclick="showSection(1)">
-                Volver al inicio <i class="fas fa-home" aria-hidden="true"></i>
-              </button>
-            </div>
-          </section>
-        </main>
+      <div class="main-content" id="main-content-container">
+        <!-- Content will be dynamically generated here -->
       </div>
     </div>
 
-    <!-- Floating Help Button -->
+    <div class="page-nav-buttons">
+      <button class="btn btn-secondary" onclick="history.back()"><i class="fas fa-arrow-left"></i> Volver</button>
+      <button class="btn" id="back-to-top-btn" style="display: none;"><i class="fas fa-arrow-up"></i> Volver Arriba</button>
+    </div>
+
     <div class="floating-notification" id="open-modal">
       <i class="fa-solid fa-hands-holding-child" style="color: #317bb4"></i>
       <span>Ayuda académica</span>
     </div>
 
-    <!-- Help Modal -->
     <div id="modal" class="modal">
       <div class="modal-content">
-        <div class="modal-header">
-          <span id="close-modal">&times;</span>
-        </div>
-        <div class="modal-body">
-          <iframe src="https://tutor-ia-escolar.web.app/"></iframe>
-        </div>
+        <div class="modal-header"><span id="close-modal">&times;</span></div>
+        <div class="modal-body"><iframe src="https://tutor-ia-escolar.web.app/"></iframe></div>
       </div>
     </div>
 
     <script src="content.js"></script>
-    <div class="page-nav-buttons">
-        <button class="btn btn-secondary" onclick="history.back()"><i class="fas fa-arrow-left"></i> Volver</button>
-        <button class="btn" id="back-to-top-btn" style="display: none;"><i class="fas fa-arrow-up"></i> Volver Arriba</button>
-    </div>
     <script>
-      // --- DYNAMIC CONTENT LOADER ---
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
         const module = params.get("module");
@@ -1169,67 +212,50 @@
           displayError("Módulo no especificado.");
           return;
         }
-
         const { grade, subjectName } = parseModuleId(module);
         if (!grade || !subjectName) {
           displayError("ID de módulo inválido.");
           return;
         }
-
         updateHeaders(grade, subjectName);
         renderExercises(module);
-        setupHelpModal(); // Add this line
-        setupNavButtons(); // Add this line
+        setupHelpModal();
+        setupNavButtons();
       });
 
-      // --- Navigation Buttons Logic ---
       function setupNavButtons() {
         const backToTopButton = document.getElementById("back-to-top-btn");
         if(backToTopButton) {
-            window.onscroll = function() {
+            window.onscroll = () => {
                 if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                     backToTopButton.style.display = "block";
                 } else {
                     backToTopButton.style.display = "none";
                 }
             };
-            backToTopButton.addEventListener("click", () => {
-                window.scrollTo({top: 0, behavior: 'smooth'});
-            });
+            backToTopButton.addEventListener("click", () => window.scrollTo({top: 0, behavior: 'smooth'}));
         }
       }
 
-      // --- Help Modal Logic ---
       function setupHelpModal() {
         const helpModal = document.getElementById("modal");
         const openHelpModal = document.getElementById("open-modal");
         const closeHelpModal = document.getElementById("close-modal");
-
         if(helpModal && openHelpModal && closeHelpModal) {
-            openHelpModal.addEventListener("click", () => {
-                helpModal.style.display = "flex";
-            });
-
-            closeHelpModal.addEventListener("click", () => {
-                helpModal.style.display = "none";
-            });
-
-            window.addEventListener("click", (e) => {
-                if (e.target === helpModal) {
-                helpModal.style.display = "none";
-                }
-            });
+            openHelpModal.onclick = () => { helpModal.style.display = "flex"; };
+            closeHelpModal.onclick = () => { helpModal.style.display = "none"; };
+            window.onclick = (e) => { if (e.target === helpModal) { helpModal.style.display = "none"; } };
         }
       }
 
       function parseModuleId(module) {
-        const parts = module.match(/^g(\d+)-(.+)$/);
-        if (!parts) return {};
-        const grade = `${parts[1]}mo Grado`;
-        const subjectId = parts[2];
-        const subjectName =
-          subjectId.charAt(0).toUpperCase() +
-          subjectId.slice(1).replace(/-/g, " ");
+        if (!module || !module.startsWith('g') || module.indexOf('-') === -1) return {};
+        const firstDashIndex = module.indexOf('-');
+        const gradeNum = module.substring(1, firstDashIndex);
+        const subjectId = module.substring(firstDashIndex + 1);
+        if (isNaN(parseInt(gradeNum))) return {};
+        const grade = `${gradeNum}mo Grado`;
+        const subjectName = subjectId.charAt(0).toUpperCase() + subjectId.slice(1).replace(/-/g, " ");
         return { grade, subjectId, subjectName };
       }
 
@@ -1238,36 +264,21 @@
         const pageTitle = document.querySelector("title");
         const breadcrumb = document.querySelector(".header p");
         const fullTitle = `Ejercicios de ${subjectName}`;
-        if (headerTitle)
-          headerTitle.innerHTML = `<i class="fas fa-pen-to-square"></i> ${fullTitle}`;
+        if (headerTitle) headerTitle.innerHTML = `<i class="fas fa-pen-to-square"></i> ${fullTitle}`;
         if (pageTitle) pageTitle.textContent = fullTitle;
-        if (breadcrumb)
-          breadcrumb.textContent = `Módulo de práctica para ${grade}`;
+        if (breadcrumb) breadcrumb.textContent = `Módulo de práctica para ${grade}`;
       }
 
       function displayError(message) {
-        const contentArea = document.querySelector(".main-content");
-        if (!contentArea) return;
-        contentArea.innerHTML = `
-            <div class="card highlight" style="text-align: center; width: 100%;">
-                <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
-                <p>${message}</p>
-                <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
-            </div>`;
+        const contentArea = document.getElementById("main-content-container");
+        if (contentArea) contentArea.innerHTML = `<div class="card" style="text-align: center;"><h2><i class="fas fa-exclamation-triangle"></i> Error</h2><p>${message}</p><a href="index.html" class="btn">Volver</a></div>`;
       }
 
       function renderExercises(module) {
-        const contentArea = document.querySelector(".main-content");
-        if (typeof contentData === 'undefined' || !contentData[module] || !contentData[module].units) {
-          contentArea.innerHTML = `
-            <div class="not-found-card card" style="text-align: center; padding: 2rem; width: 100%;">
-                <h2><i class="fas fa-search"></i> Contenido no encontrado</h2>
-                <p>Aún no hemos agregado ejercicios para este módulo. ¡Vuelve pronto!</p>
-                <a href="javascript:history.back()" class="btn" style="margin-top: 1rem;">Volver</a>
-            </div>`;
-          return;
+        const contentArea = document.getElementById("main-content-container");
+        if (typeof contentData === 'undefined' || !contentData[module]) {
+          return displayError("Contenido para este módulo no encontrado.");
         }
-
         const data = contentData[module];
         contentArea.innerHTML = `
             <nav class="sidebar" aria-label="Navegación de unidades">
@@ -1276,29 +287,21 @@
             </nav>
             <main class="content-area" role="main" id="exercise-main-content"></main>
         `;
-
         const sidebarNav = document.getElementById('sidebar-nav-items');
-        const exerciseContent = document.getElementById('exercise-main-content');
         let firstUnitId = '';
-
         data.units.forEach((unit, index) => {
             const unitId = `unit-${index}`;
             if(index === 0) firstUnitId = unitId;
-
             const navItem = document.createElement('div');
             navItem.className = 'nav-item';
             navItem.dataset.unitId = unitId;
-            navItem.innerHTML = `<span>${unit.title}</span><span class="status-badge">📚</span>`;
+            navItem.innerHTML = `<span>${unit.title}</span>`;
             navItem.onclick = () => showUnit(unitId, data);
             sidebarNav.appendChild(navItem);
         });
-
         if(firstUnitId) {
             showUnit(firstUnitId, data);
-            const firstNavItem = sidebarNav.querySelector('.nav-item');
-            if(firstNavItem) firstNavItem.classList.add('active');
-        } else {
-            exerciseContent.innerHTML = '<h2>No hay unidades con ejercicios en este módulo.</h2>';
+            sidebarNav.querySelector('.nav-item').classList.add('active');
         }
       }
 
@@ -1306,40 +309,33 @@
         const unitIndex = parseInt(unitId.split('-')[1]);
         const unit = data.units[unitIndex];
         const exerciseContent = document.getElementById('exercise-main-content');
-
-        document.querySelectorAll('.sidebar .nav-item').forEach(item => {
-            item.classList.toggle('active', item.dataset.unitId === unitId);
-        });
-
+        document.querySelectorAll('.sidebar .nav-item').forEach(item => item.classList.remove('active'));
+        document.querySelector(`.sidebar .nav-item[data-unit-id="${unitId}"]`).classList.add('active');
         let exercisesHtml = `<h2><i class="fas fa-tasks"></i> ${unit.title}</h2>`;
         let hasExercises = false;
-
         unit.lessons.forEach((lesson, lessonIndex) => {
             if(lesson.examples && lesson.examples.length > 0) {
                 hasExercises = true;
                 exercisesHtml += `<div class="card highlight"><h3>${lesson.title}</h3></div>`;
                 lesson.examples.forEach((ex, exIndex) => {
                     const exerciseId = `ex-${unitIndex}-${lessonIndex}-${exIndex}`;
+                    const difficultyClass = ex.difficulty ? `difficulty-${ex.difficulty.replace(' ', '')}` : '';
                     exercisesHtml += `
                         <div class="exercise">
                             <div class="exercise-header">
                                 <span class="exercise-title">${ex.problem}</span>
+                                ${ex.difficulty ? `<span class="difficulty-badge ${difficultyClass}">${ex.difficulty}</span>` : ''}
                             </div>
                             <div class="input-group">
                                 <input type="text" class="math-input" id="answer-${exerciseId}" placeholder="Tu respuesta">
                                 <button class="btn" onclick="checkAnswer('${exerciseId}', '${ex.solution}')">Verificar</button>
                             </div>
                             <div class="feedback" id="feedback-${exerciseId}"></div>
-                        </div>
-                    `;
+                        </div>`;
                 });
             }
         });
-
-        if(!hasExercises){
-            exercisesHtml += '<p>No hay ejercicios en esta unidad.</p>';
-        }
-
+        if(!hasExercises) exercisesHtml += '<p>No hay ejercicios en esta unidad.</p>';
         exerciseContent.innerHTML = exercisesHtml;
       }
 
@@ -1347,18 +343,14 @@
           const answerInput = document.getElementById(`answer-${exerciseId}`);
           const userAnswer = answerInput.value.trim();
           const feedbackEl = document.getElementById(`feedback-${exerciseId}`);
-
-          const normalizedUserAnswer = userAnswer.replace(/\s/g, '');
-          const normalizedCorrectAnswer = String(correctAnswer).replace(/\s/g, '');
-
-          if (normalizedUserAnswer.toLowerCase() === normalizedCorrectAnswer.toLowerCase()) {
+          const normalizedUserAnswer = userAnswer.replace(/\s/g, '').toLowerCase();
+          const normalizedCorrectAnswer = String(correctAnswer).replace(/\s/g, '').toLowerCase();
+          if (normalizedUserAnswer === normalizedCorrectAnswer) {
               feedbackEl.innerHTML = '<i class="fas fa-check-circle"></i> ¡Correcto!';
               feedbackEl.className = 'feedback correct show';
-              answerInput.style.borderColor = 'var(--success-color)';
           } else {
               feedbackEl.innerHTML = `Incorrecto. La respuesta correcta es: <strong>${correctAnswer}</strong>`;
               feedbackEl.className = 'feedback incorrect show';
-              answerInput.style.borderColor = 'var(--error-color)';
           }
       }
     </script>

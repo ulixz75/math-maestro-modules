@@ -275,7 +275,6 @@
             font-size: 1.2rem;
         }
       }
-
       /* Help Modal Styles */
       .modal#modal {
         display: none;
@@ -337,7 +336,7 @@
       </main>
     </div>
 
-    <!-- Lesson Modal Structure -->
+    <!-- Modal Structure -->
     <div id="lesson-modal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -349,7 +348,7 @@
     </div>
 
     <!-- Floating Help Button -->
-    <div class="floating-notification" id="open-modal" style="bottom: 100px;">
+    <div class="floating-notification" id="open-modal" style="bottom: 95px;">
       <i class="fa-solid fa-hands-holding-child" style="color: #317bb4"></i>
       <span>Ayuda académica</span>
     </div>
@@ -365,7 +364,6 @@
         </div>
       </div>
     </div>
-
     <script src="content.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -384,11 +382,10 @@
 
         updateHeaders(grade, subjectName);
         renderContent(module);
-        setupModal(); // Sets up the lesson modal
-        setupHelpModal(); // Sets up the help modal
+        setupModal();
+        setupHelpModal();
       });
 
-      // --- Help Modal Logic ---
       function setupHelpModal() {
         const helpModal = document.getElementById("modal");
         const openHelpModal = document.getElementById("open-modal");
