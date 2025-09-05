@@ -72,7 +72,20 @@
       }
       .main-content {
           display: flex;
+          justify-content: center;
+          align-items: flex-start;
           min-height: calc(100vh - 200px);
+          padding: 1rem;
+      }
+      #exam-form {
+        max-width: 800px;
+        width: 100%;
+      }
+      @media (max-width: 768px) {
+          .header h1 { font-size: 1.8rem; }
+          .header p { font-size: 1rem; }
+          .card { padding: 1.5rem; }
+          #exam-form { padding: 1rem 0 !important; }
       }
       .card {
           background: white;

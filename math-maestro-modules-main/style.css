@@ -236,6 +236,7 @@ body {
   align-items: center;
   gap: 0.75rem;
   animation: slideIn 0.5s ease;
+  z-index: 1001;
 }
 /* Hover background */
 .floating-notification:hover {
