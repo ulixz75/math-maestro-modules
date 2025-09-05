@@ -118,6 +118,14 @@
           gap: 0.5rem;
           text-decoration: none;
       }
+      .page-nav-buttons {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 1000;
+        display: flex;
+        gap: 10px;
+      }
     </style>
   </head>
   <body>
@@ -131,9 +139,15 @@
       </div>
     </div>
 
+    <div class="page-nav-buttons">
+        <button class="btn btn-secondary" onclick="history.back()"><i class="fas fa-arrow-left"></i> Volver</button>
+        <button class="btn" id="back-to-top-btn" style="display: none;"><i class="fas fa-arrow-up"></i> Volver Arriba</button>
+    </div>
     <script src="content.js"></script>
     <script>
       // --- DYNAMIC CONTENT LOADER ---
+      let correctAnswers = []; // Holds the correct answers for the current exam
+
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
         const module = params.get("module");
@@ -150,7 +164,25 @@
 
         updateHeaders(grade, subjectName);
         renderExam(module);
+        setupNavButtons(); // Add this line
       });
+
+      // --- Navigation Buttons Logic ---
+      function setupNavButtons() {
+        const backToTopButton = document.getElementById("back-to-top-btn");
+        if(backToTopButton) {
+            window.onscroll = function() {
+                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                    backToTopButton.style.display = "block";
+                } else {
+                    backToTopButton.style.display = "none";
+                }
+            };
+            backToTopButton.addEventListener("click", () => {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        }
+      }
 
       function parseModuleId(module) {
         const parts = module.match(/^g(\d+)-(.+)$/);
@@ -178,45 +210,81 @@
       function displayError(message) {
         const contentArea = document.querySelector(".main-content");
         if (!contentArea) return;
-        contentArea.innerHTML = `
-            <div class="card highlight" style="text-align: center; width: 100%;">
-                <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
-                <p>${message}</p>
-                <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
-            </div>`;
+        contentArea.innerHTML = `<div class="card highlight" style="text-align: center; width: 100%;"><h2><i class="fas fa-exclamation-triangle"></i> Error</h2><p>${message}</p><a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a></div>`;
+      }
+
+      // --- New Exam Logic ---
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function generateOptions(correctSolution) {
+        let options = [String(correctSolution)]; // Ensure the correct solution is a string
+        const numericSolution = parseFloat(correctSolution);
+
+        if (!isNaN(numericSolution) && String(correctSolution).trim() === String(numericSolution)) {
+            let incorrectOptions = new Set();
+            while (incorrectOptions.size < 3) {
+                const randomFactor = Math.random() > 0.5 ? 1 : -1;
+                const randomOffset = (Math.floor(Math.random() * 10) + 1) * randomFactor;
+                const wrongAnswer = numericSolution + randomOffset;
+                if (wrongAnswer !== numericSolution) {
+                    incorrectOptions.add(String(wrongAnswer));
+                }
+            }
+            options.push(...incorrectOptions);
+        } else {
+            // For non-numeric or complex string answers, we cannot reliably generate distractors.
+            // This part can be improved if the data structure provides distractors.
+            // For now, we create some generic incorrect options.
+            options.push("Opción incorrecta A", "Opción incorrecta B", "Opción incorrecta C");
+        }
+        return shuffleArray(options);
       }
 
       function renderExam(module) {
         const contentArea = document.querySelector(".main-content");
+        correctAnswers = []; // Reset for new exam
+
         if (typeof contentData === 'undefined' || !contentData[module] || !contentData[module].units) {
-          contentArea.innerHTML = `
-            <div class="card" style="text-align: center; padding: 2rem; width: 100%;">
-                <h2><i class="fas fa-search"></i> Contenido no encontrado</h2>
-                <p>Aún no hemos agregado un examen para este módulo. ¡Vuelve pronto!</p>
-                <a href="javascript:history.back()" class="btn" style="margin-top: 1rem;">Volver</a>
-            </div>`;
+          contentArea.innerHTML = `<div class="card" style="text-align: center; padding: 2rem; width: 100%;"><h2><i class="fas fa-search"></i> Contenido no encontrado</h2><p>Aún no hemos agregado un examen para este módulo. ¡Vuelve pronto!</p><a href="javascript:history.back()" class="btn" style="margin-top: 1rem;">Volver</a></div>`;
           return;
         }
 
         const data = contentData[module];
-        let questionsHtml = '<div style="padding: 2rem; width: 100%;">';
+        let questionsHtml = '<div id="exam-form" style="padding: 2rem; width: 100%;">';
         let questionCounter = 0;
 
         data.units.forEach((unit) => {
             unit.lessons.forEach((lesson) => {
-                if(lesson.examples && lesson.examples.length > 0) {
+                if (lesson.examples && lesson.examples.length > 0) {
                     lesson.examples.forEach((ex) => {
                         questionCounter++;
-                        const questionId = `q-${questionCounter}`;
+                        correctAnswers.push({ id: `q-${questionCounter}`, solution: ex.solution });
+
+                        const options = generateOptions(ex.solution);
+                        let optionsHtml = '';
+                        options.forEach((opt, index) => {
+                            // Use ex.solution for the value of the correct option to ensure consistent comparison
+                            const optionValue = opt === ex.solution ? ex.solution : opt;
+                            optionsHtml += `
+                                <div class="exam-option">
+                                    <input type="radio" id="q-${questionCounter}-opt-${index}" name="question-${questionCounter}" value="${optionValue.replace(/"/g, '&quot;')}">
+                                    <label for="q-${questionCounter}-opt-${index}">${opt}</label>
+                                </div>
+                            `;
+                        });
+
                         questionsHtml += `
-                            <div class="card">
+                            <div class="card question-card" id="card-q-${questionCounter}">
                                 <h4>Pregunta ${questionCounter}: ${lesson.title}</h4>
                                 <p><strong>Enunciado:</strong> ${ex.problem}</p>
-                                <div style="margin: 1rem 0;">
-                                    <input type="text" id="answer-${questionId}" placeholder="Escribe tu respuesta" style="width: 100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;">
-                                </div>
-                                <button class="btn" onclick="checkExamAnswer('${questionId}', '${ex.solution}')">Corregir</button>
-                                <div id="feedback-${questionId}" style="margin-top: 1rem; padding: 0.5rem; border-radius: 5px; display: none;"></div>
+                                <div class="options-container">${optionsHtml}</div>
                             </div>
                         `;
                     });
@@ -225,37 +293,67 @@
         });
 
         if (questionCounter === 0) {
-            questionsHtml += `
-                <div class="card" style="text-align: center;">
-                    <h2><i class="fas fa-info-circle"></i> No hay preguntas</h2>
-                    <p>Este módulo aún no tiene preguntas de examen disponibles.</p>
-                </div>
-            `;
+            questionsHtml += `<div class="card" style="text-align: center;"><h2><i class="fas fa-info-circle"></i> No hay preguntas</h2><p>Este módulo aún no tiene preguntas de examen disponibles.</p></div>`;
+        } else {
+            questionsHtml += `<button id="finish-exam-btn" class="btn" onclick="finishExam()">Finalizar Examen</button>`;
         }
-        questionsHtml += '</div>';
+
+        questionsHtml += '</div><div id="exam-results" style="padding: 2rem; width: 100%;"></div>';
         contentArea.innerHTML = questionsHtml;
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .exam-option { margin-bottom: 0.75rem; padding: 0.5rem; border-radius: 5px; }
+            .exam-option:hover { background-color: #f8f9fa; }
+            .exam-option input { margin-right: 0.75rem; }
+            .correct-answer { border: 2px solid var(--success-color); background-color: #f7fff7; }
+            .incorrect-answer { border: 2px solid var(--error-color); background-color: #fff7f7; }
+            .results-card { text-align: center; }
+        `;
+        document.head.appendChild(style);
       }
 
-      function checkExamAnswer(questionId, correctAnswer) {
-          const answerInput = document.getElementById(`answer-${questionId}`);
-          const userAnswer = answerInput.value.trim();
-          const feedbackEl = document.getElementById(`feedback-${questionId}`);
+      function finishExam() {
+        let score = 0;
+        correctAnswers.forEach(answer => {
+            const questionId = answer.id;
+            const card = document.getElementById(`card-${questionId}`);
+            const selectedOption = document.querySelector(`input[name="question-${questionId}"]:checked`);
 
-          const normalizedUserAnswer = userAnswer.replace(/\s/g, '');
-          const normalizedCorrectAnswer = String(correctAnswer).replace(/\s/g, '');
+            if (selectedOption) {
+                const userAnswer = selectedOption.value;
+                const correctAnswer = String(answer.solution);
 
-          if (normalizedUserAnswer.toLowerCase() === normalizedCorrectAnswer.toLowerCase()) {
-              feedbackEl.innerHTML = '<i class="fas fa-check-circle"></i> ¡Respuesta Correcta!';
-              feedbackEl.style.backgroundColor = '#d4edda';
-              feedbackEl.style.color = '#155724';
-              answerInput.style.borderColor = '#2ecc71';
-          } else {
-              feedbackEl.innerHTML = `<i class="fas fa-times-circle"></i> Incorrecto. La respuesta correcta es: <strong>${correctAnswer}</strong>`;
-              feedbackEl.style.backgroundColor = '#f8d7da';
-              feedbackEl.style.color = '#721c24';
-              answerInput.style.borderColor = '#e74c3c';
-          }
-          feedbackEl.style.display = 'block';
+                if (userAnswer === correctAnswer) {
+                    score++;
+                    card.classList.add('correct-answer');
+                } else {
+                    card.classList.add('incorrect-answer');
+                }
+            } else {
+                card.classList.add('incorrect-answer');
+            }
+        });
+
+        const totalQuestions = correctAnswers.length;
+        const percentage = totalQuestions > 0 ? (score / totalQuestions) * 100 : 0;
+
+        const resultsDiv = document.getElementById('exam-results');
+        resultsDiv.innerHTML = `
+            <div class="card results-card">
+                <h2>Resultados del Examen</h2>
+                <p>Has respondido correctamente <strong>${score}</strong> de <strong>${totalQuestions}</strong> preguntas.</p>
+                <h3>Tu puntuación: ${percentage.toFixed(0)}%</h3>
+            </div>
+        `;
+
+        resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+        document.querySelectorAll('#exam-form input[type="radio"]').forEach(input => {
+            input.disabled = true;
+        });
+        const finishButton = document.getElementById('finish-exam-btn');
+        if (finishButton) finishButton.style.display = 'none';
       }
     </script>
   </body>
