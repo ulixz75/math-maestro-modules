@@ -131,7 +131,9 @@
       </div>
     </div>
 
+    <script src="content.js"></script>
     <script>
+      // --- DYNAMIC CONTENT LOADER ---
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
         const module = params.get("module");
@@ -140,77 +142,120 @@
           return;
         }
 
-        const { grade, subject, subjectName } = parseModuleId(module);
-        if (!grade || !subject) {
+        const { grade, subjectName } = parseModuleId(module);
+        if (!grade || !subjectName) {
           displayError("ID de módulo inválido.");
           return;
         }
 
         updateHeaders(grade, subjectName);
-        renderContent(grade, subject);
+        renderExam(module);
       });
 
       function parseModuleId(module) {
         const parts = module.match(/^g(\d+)-(.+)$/);
         if (!parts) return {};
-
         const grade = `${parts[1]}mo Grado`;
         const subjectId = parts[2];
-        const subjectName = subjectId
-          .replace(/-/g, " ")
-          .replace(/\b\w/g, (c) => c.toUpperCase());
-        return { grade, subject: subjectId, subjectName };
+        const subjectName =
+          subjectId.charAt(0).toUpperCase() +
+          subjectId.slice(1).replace(/-/g, " ");
+        return { grade, subjectId, subjectName };
       }
 
       function updateHeaders(grade, subjectName) {
         const headerTitle = document.querySelector(".header h1");
         const pageTitle = document.querySelector("title");
         const breadcrumb = document.querySelector(".header p");
-
         const fullTitle = `Examen de Práctica: ${subjectName}`;
-        headerTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${fullTitle}`;
-        pageTitle.textContent = fullTitle;
-        breadcrumb.textContent = `Módulo de examen para ${grade}`;
+        if (headerTitle)
+          headerTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${fullTitle}`;
+        if (pageTitle) pageTitle.textContent = fullTitle;
+        if (breadcrumb)
+          breadcrumb.textContent = `Módulo de examen para ${grade}`;
       }
 
       function displayError(message) {
         const contentArea = document.querySelector(".main-content");
+        if (!contentArea) return;
         contentArea.innerHTML = `
             <div class="card highlight" style="text-align: center; width: 100%;">
                 <h2><i class="fas fa-exclamation-triangle"></i> Error</h2>
                 <p>${message}</p>
                 <a href="index.html" class="btn" style="margin-top: 1rem;">Volver al inicio</a>
-            </div>
-        `;
+            </div>`;
       }
 
-      function renderContent(grade, subject) {
+      function renderExam(module) {
         const contentArea = document.querySelector(".main-content");
-        contentArea.innerHTML = `
-            <div style="text-align: center; padding: 2rem; width: 100%;">
-                <div class="card success">
-                    <h2><i class="fas fa-check-circle"></i> Módulo Cargado Exitosamente</h2>
-                    <p>
-                        Mostrando examen de práctica para <strong>${subject
-                          .replace(/-/g, " ")
-                          .toUpperCase()}</strong> de <strong>${grade}</strong>.
-                    </p>
+        if (typeof contentData === 'undefined' || !contentData[module] || !contentData[module].units) {
+          contentArea.innerHTML = `
+            <div class="card" style="text-align: center; padding: 2rem; width: 100%;">
+                <h2><i class="fas fa-search"></i> Contenido no encontrado</h2>
+                <p>Aún no hemos agregado un examen para este módulo. ¡Vuelve pronto!</p>
+                <a href="javascript:history.back()" class="btn" style="margin-top: 1rem;">Volver</a>
+            </div>`;
+          return;
+        }
+
+        const data = contentData[module];
+        let questionsHtml = '<div style="padding: 2rem; width: 100%;">';
+        let questionCounter = 0;
+
+        data.units.forEach((unit) => {
+            unit.lessons.forEach((lesson) => {
+                if(lesson.examples && lesson.examples.length > 0) {
+                    lesson.examples.forEach((ex) => {
+                        questionCounter++;
+                        const questionId = `q-${questionCounter}`;
+                        questionsHtml += `
+                            <div class="card">
+                                <h4>Pregunta ${questionCounter}: ${lesson.title}</h4>
+                                <p><strong>Enunciado:</strong> ${ex.problem}</p>
+                                <div style="margin: 1rem 0;">
+                                    <input type="text" id="answer-${questionId}" placeholder="Escribe tu respuesta" style="width: 100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;">
+                                </div>
+                                <button class="btn" onclick="checkExamAnswer('${questionId}', '${ex.solution}')">Corregir</button>
+                                <div id="feedback-${questionId}" style="margin-top: 1rem; padding: 0.5rem; border-radius: 5px; display: none;"></div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+        });
+
+        if (questionCounter === 0) {
+            questionsHtml += `
+                <div class="card" style="text-align: center;">
+                    <h2><i class="fas fa-info-circle"></i> No hay preguntas</h2>
+                    <p>Este módulo aún no tiene preguntas de examen disponibles.</p>
                 </div>
-                <div class="card" style="margin-top: 2rem;">
-                     <h3>Contenido del Examen</h3>
-                     <p>Aquí se mostraría un examen interactivo con preguntas de opción múltiple, verdadero/falso, etc.</p>
-                     <div class="visual-example" style="margin-top: 1rem;">
-                        <i class="fas fa-question-circle" style="font-size: 3rem; color: var(--primary-color);"></i>
-                        <p style="margin-top: 1rem;">[Examen de práctica para ${subject
-                          .replace(/-/g, " ")
-                          .toUpperCase()}...]</p>
-                     </div>
-                </div>
-                 <a href="javascript:history.back()" class="btn" style="margin-top: 2rem;">
-                    <i class="fas fa-arrow-left"></i> Volver a la materia
-                 </a>
-            </div>
-        `;
+            `;
+        }
+        questionsHtml += '</div>';
+        contentArea.innerHTML = questionsHtml;
+      }
+
+      function checkExamAnswer(questionId, correctAnswer) {
+          const answerInput = document.getElementById(`answer-${questionId}`);
+          const userAnswer = answerInput.value.trim();
+          const feedbackEl = document.getElementById(`feedback-${questionId}`);
+
+          const normalizedUserAnswer = userAnswer.replace(/\s/g, '');
+          const normalizedCorrectAnswer = String(correctAnswer).replace(/\s/g, '');
+
+          if (normalizedUserAnswer.toLowerCase() === normalizedCorrectAnswer.toLowerCase()) {
+              feedbackEl.innerHTML = '<i class="fas fa-check-circle"></i> ¡Respuesta Correcta!';
+              feedbackEl.style.backgroundColor = '#d4edda';
+              feedbackEl.style.color = '#155724';
+              answerInput.style.borderColor = '#2ecc71';
+          } else {
+              feedbackEl.innerHTML = `<i class="fas fa-times-circle"></i> Incorrecto. La respuesta correcta es: <strong>${correctAnswer}</strong>`;
+              feedbackEl.style.backgroundColor = '#f8d7da';
+              feedbackEl.style.color = '#721c24';
+              answerInput.style.borderColor = '#e74c3c';
+          }
+          feedbackEl.style.display = 'block';
       }
     </script>
   </body>
